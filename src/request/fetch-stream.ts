@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Author: shiby
+ * @Date: 2024-06-07 11:07:14
+ * @LastEditTime: 2024-06-07 17:47:15
+ * @LastEditors: shiby
+ * @Reference: 
+ */
 import fetch, { RequestInit, Response } from "node-fetch";
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 import { window } from "vscode";
@@ -53,7 +61,7 @@ export class FetchStream {
     //     window.setStatusBarMessage(`${error}`, 10000);
     //     this.onerror?.(error);
     //   });
-
+      // 发送请求
       axios.post(this.url, this.requestInit.body)
 		  .then(response => {
 			  console.log(response.data);
