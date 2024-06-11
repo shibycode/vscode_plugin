@@ -7,17 +7,27 @@ interface GenerateResponse {
 }
 
 function getRequestDataCPU(fimPrefixCode: string, fimSuffixCode: string): RequestData {
+    const prompt = `fimPrefixCode=${fimPrefixCode},fimSuffixCode=${fimSuffixCode}.已知前缀代码fimPrefixCode和后缀代码fimSuffixCode,请补全并返回中间部分`;
     return {
-        uri: "/infill",
+        uri: "http://10.0.5.118:9002/streamingInterface/promptEngineTemplate/testStream",
         body: {
-            "input_prefix": fimPrefixCode,
-            "input_suffix": fimSuffixCode,
-            "n_predict": MAX_TOKENS_COMPLETION,
-            "temperature": 0.2,
-            "repetition_penalty": 1.0,
-            "top_k": 10,
-            "top_p": 0.95,
-            "stop": STOP_WORDS
+            "temperature": 70,
+            "tokens": 2048,
+            "system": "",
+            "modelName": "Qwen1.5-14B-Chat",
+            "talk": [
+                {
+                    "role": "user",
+                    "text": prompt
+                }
+            ],
+            "ref": "Qwen1.5-14B-Chat",
+            "query": prompt,
+            "role": "user",
+            "modelParams": {
+                "temperature": 0.7,
+                "max_tokens": 2048
+            }
         }
     };
 }
@@ -44,8 +54,9 @@ function getRequestDataGPU(fimPrefixCode: string, fimSuffixCode: string): Reques
 export async function postCompletion(fimPrefixCode: string, fimSuffixCode: string): Promise<string | undefined> {
     if ("CPU with llama.cpp" === MODEL_ENV) {
         const requestData = getRequestDataCPU(fimPrefixCode, fimSuffixCode);
-        const response = await axiosInstance.post(SERVER_COMPLETION + requestData.uri, requestData.body);
-        const content = extractContent(response.data);
+        const response = await axiosInstance.post(requestData.uri, requestData.body);
+        const content = response.data;
+        // const content = extractContent(response.data);
         console.debug("response.data:", content);
         return content.replace(END_OF_TEXT, "");
     }

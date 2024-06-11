@@ -69,6 +69,11 @@
     addCodeBlockButtons(contentIndex);
     hljs.highlightAll();
 
+    answerCopyBtn(contentIndex, responseText);
+    // 复制按钮事件
+    answerRefreshBtn(contentIndex);
+    codeBlockButtonEvent(contentIndex);
+
     const chatContainer = document.getElementById("chatContainerQuestionListId");
     const testNextDiv = document.getElementById(`qa_section_div_${contentIndex + 1}`);
     if (!testNextDiv) {

@@ -164,20 +164,9 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 		};
 		console.log("historyPrompt:", historyPrompt);
 		postEventStream(historyPrompt, (data) => {
-			// const jsonData = JSON.parse(data);
-			// if (jsonData.content) {
-			// 	chatItem.aiMessage.append(jsonData.content);
-			// }
-			// if (jsonData.token) {
-			// 	chatItem.aiMessage.append(jsonData.token.text);
-			// }
-			// if (jsonData.id && jsonData.id !== "0") {
-			// 	chatItem.aiMsgId = jsonData.id;
-			// }
-			console.log("generateAnswer.streamData:", chatItem);
 			console.log("generateAnswer.streamData:", data);
 			chatItem.aiMessage.append(data);
-			chatItem.aiMsgId = '1';
+			chatItem.aiMsgId = index.toString();
 			respData.responseText = chatItem.aiMessage.content;
 			respData.aiMsgId = chatItem.aiMsgId;
 			this._view?.webview.postMessage({ type: "addStreamResponse", value: respData });

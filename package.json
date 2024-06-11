@@ -148,7 +148,7 @@
     "submenus": [
       {
         "id": "codeshell_context_submenu",
-        "label": "CodeShell"
+        "label": "神码Code"
       }
     ],
     "menus": {
@@ -210,8 +210,8 @@
       "activitybar": [
         {
           "id": "codeshell_sidebar",
-          "title": "CodeShell",
-          "icon": "assets/logo.svg"
+          "title": "神码Code",
+          "icon": "$(hubot)"
         }
       ]
     },
@@ -219,7 +219,7 @@
       "codeshell_sidebar": [
         {
           "id": "codeshell.chatView",
-          "name": "CodeShell",
+          "name": "神码Code",
           "type": "webview"
         }
       ]
