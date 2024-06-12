@@ -6,6 +6,7 @@
 (function () {
   const vscode = acquireVsCodeApi();
 
+  // 将文本转换为html
   const showdownConverter = new showdown.Converter({
     omitExtraWLInCodeBlocks: true,
     simplifiedAutoLink: true,
@@ -41,6 +42,12 @@
     }
   });
 
+  // 替换showdown转换为html时code标签的class属性
+  function fixCodeClasses(responseText) {
+    // 去掉code标签的class属性 防止代码高亮失效
+    return responseText.replace(/<code(.*?)class="(.*?)"(.*?)>/gi, '<code$1$3>');
+  };
+
   function addQuestionAnswerDiv(eventData) {
     let chatContainer = document.getElementById("chatContainerQuestionListId");
 
@@ -50,7 +57,7 @@
 
     let questionDiv = document.getElementById(`questionDiv${eventData.contentIndex}`);
     html = showdownConverter.makeHtml(eventData.question);
-    questionDiv.innerHTML = html;
+    questionDiv.innerHTML = fixCodeClasses(html);
     hljs.highlightAll();
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -65,7 +72,7 @@
     const html = showdownConverter.makeHtml(responseText);
     const outputDiv = document.getElementById(`outputDiv${contentIndex}`);
     outputDiv.innerHTML = null;
-    outputDiv.innerHTML = html;
+    outputDiv.innerHTML = fixCodeClasses(html);;
     addCodeBlockButtons(contentIndex);
     hljs.highlightAll();
 
@@ -237,9 +244,9 @@
       let question = eventData.chatList[i].humanMessage.content;
       let answer = eventData.chatList[i].aiMessage.content;
       qHtml = showdownConverter.makeHtml(question);
-      document.getElementById(`questionDiv${i}`).innerHTML = qHtml;
+      document.getElementById(`questionDiv${i}`).innerHTML = fixCodeClasses(qHtml);
       aHtml = showdownConverter.makeHtml(answer);
-      document.getElementById(`outputDiv${i}`).innerHTML = aHtml;
+      document.getElementById(`outputDiv${i}`).innerHTML = fixCodeClasses(aHtml);
 
       questionEditBtn(i, question);
       answerCopyBtn(i, answer);
