@@ -28,11 +28,11 @@ export class FetchStream {
   }
 
   createFetchRequest() {
-    const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
-      if (event.type === "event") {
-        this.onmessage(event.data);
-      }
-    });
+    // const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
+    //   if (event.type === "event") {
+    //     this.onmessage(event.data);
+    //   }
+    // });
 
     // fetch(this.url, this.requestInit)
     //   .then(response => {

@@ -1,7 +1,7 @@
 {
-  "name": "codeshell-vscode",
-  "displayName": "CodeShell VSCode Extension",
-  "description": "Coding with CodeShell LLM",
+  "name": "codedcit-vscode",
+  "displayName": "CodeDcit VSCode Extension",
+  "description": "Coding with CodeDcit LLM",
   "publisher": "WisdomShell",
   "version": "0.1.1",
   "icon": "assets/logo.png",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/WisdomShell/codeshell-vscode.git"
+    "url": "https://github.com/shibycode/vscode_plugin"
   },
   "engines": {
     "vscode": "^1.68.1"
@@ -28,15 +28,15 @@
   "l10n": "./l10n",
   "contributes": {
     "configuration": {
-      "title": "CodeShell",
+      "title": "CodeDcit",
       "properties": {
-        "CodeShell.ServerAddress": {
-          "description": "The address of the CodeShell server to connect to.",
+        "CodeDcit.ServerAddress": {
+          "description": "The address of the CodeDcit server to connect to.",
           "default": "http://127.0.0.1:8080",
           "type": "string",
           "order": 1
         },
-        "CodeShell.RunEnvForLLMs": {
+        "CodeDcit.RunEnvForLLMs": {
           "description": "The environment that should be used for running LLMs.",
           "default": "CPU with llama.cpp",
           "enum": [
@@ -46,13 +46,13 @@
           "type": "string",
           "order": 2
         },
-        "CodeShell.AutoTriggerCompletion": {
+        "CodeDcit.AutoTriggerCompletion": {
           "description": "Whether or not to automatically trigger completion when typing.",
           "default": true,
           "type": "boolean",
           "order": 6
         },
-        "CodeShell.AutoCompletionDelay": {
+        "CodeDcit.AutoCompletionDelay": {
           "description": "The delay in seconds before automatic code completion triggers.",
           "type": "number",
           "enum": [
@@ -63,7 +63,7 @@
           "default": 1,
           "order": 7
         },
-        "CodeShell.CompletionMaxTokens": {
+        "CodeDcit.CompletionMaxTokens": {
           "description": "Maximum number of tokens for which suggestions will be displayed",
           "type": "number",
           "enum": [
@@ -76,7 +76,7 @@
           "default": 64,
           "order": 8
         },
-        "CodeShell.ChatMaxTokens": {
+        "CodeDcit.ChatMaxTokens": {
           "description": "Maximum number of tokens for which chat messages will be displayed",
           "type": "number",
           "enum": [
@@ -100,107 +100,107 @@
     ],
     "commands": [
       {
-        "command": "codeshell.auto_completion_enable",
-        "title": "%codeshell.auto_completion_enable.title%",
-        "category": "codeshell"
+        "command": "codedcit.auto_completion_enable",
+        "title": "%codedcit.auto_completion_enable.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.auto_completion_disable",
-        "title": "%codeshell.auto_completion_disable.title%",
-        "category": "codeshell"
+        "command": "codedcit.auto_completion_disable",
+        "title": "%codedcit.auto_completion_disable.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.explain_this_code",
-        "title": "%codeshell.explain_this_code.title%",
-        "category": "codeshell"
+        "command": "codedcit.explain_this_code",
+        "title": "%codedcit.explain_this_code.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.improve_this_code",
-        "title": "%codeshell.improve_this_code.title%",
-        "category": "codeshell"
+        "command": "codedcit.improve_this_code",
+        "title": "%codedcit.improve_this_code.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.clean_this_code",
-        "title": "%codeshell.clean_this_code.title%",
-        "category": "codeshell"
+        "command": "codedcit.clean_this_code",
+        "title": "%codedcit.clean_this_code.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.generate_comment",
-        "title": "%codeshell.generate_comment.title%",
-        "category": "codeshell"
+        "command": "codedcit.generate_comment",
+        "title": "%codedcit.generate_comment.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.generate_unit_test",
-        "title": "%codeshell.generate_unit_test.title%",
-        "category": "codeshell"
+        "command": "codedcit.generate_unit_test",
+        "title": "%codedcit.generate_unit_test.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.check_performance",
-        "title": "%codeshell.check_performance.title%",
-        "category": "codeshell"
+        "command": "codedcit.check_performance",
+        "title": "%codedcit.check_performance.title%",
+        "category": "codedcit"
       },
       {
-        "command": "codeshell.check_security",
-        "title": "%codeshell.check_security.title%",
-        "category": "codeshell"
+        "command": "codedcit.check_security",
+        "title": "%codedcit.check_security.title%",
+        "category": "codedcit"
       }
     ],
     "submenus": [
       {
-        "id": "codeshell_context_submenu",
+        "id": "codedcit_context_submenu",
         "label": "神码Code"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "submenu": "codeshell_context_submenu",
+          "submenu": "codedcit_context_submenu",
           "group": "navigation"
         }
       ],
-      "codeshell_context_submenu": [
+      "codedcit_context_submenu": [
         {
-          "command": "codeshell.auto_completion_enable",
+          "command": "codedcit.auto_completion_enable",
           "group": "group1@1",
-          "when": "!config.CodeShell.AutoTriggerCompletion"
+          "when": "!config.CodeDcit.AutoTriggerCompletion"
         },
         {
-          "command": "codeshell.auto_completion_disable",
+          "command": "codedcit.auto_completion_disable",
           "group": "group1@2",
-          "when": "config.CodeShell.AutoTriggerCompletion"
+          "when": "config.CodeDcit.AutoTriggerCompletion"
         },
         {
-          "command": "codeshell.explain_this_code",
+          "command": "codedcit.explain_this_code",
           "group": "group2@1",
           "when": "editorHasSelection"
         },
         {
-          "command": "codeshell.improve_this_code",
+          "command": "codedcit.improve_this_code",
           "group": "group2@2",
           "when": "editorHasSelection"
         },
         {
-          "command": "codeshell.clean_this_code",
+          "command": "codedcit.clean_this_code",
           "group": "group2@3",
           "when": "editorHasSelection"
         },
         {
-          "command": "codeshell.generate_comment",
+          "command": "codedcit.generate_comment",
           "group": "group3@1",
           "when": "editorHasSelection"
         },
         {
-          "command": "codeshell.generate_unit_test",
+          "command": "codedcit.generate_unit_test",
           "group": "group3@2",
           "when": "editorHasSelection"
         },
         {
-          "command": "codeshell.check_performance",
+          "command": "codedcit.check_performance",
           "group": "group4@1",
           "when": "editorHasSelection"
         },
         {
-          "command": "codeshell.check_security",
+          "command": "codedcit.check_security",
           "group": "group4@2",
           "when": "editorHasSelection"
         }
@@ -209,16 +209,16 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "codeshell_sidebar",
+          "id": "codedcit_sidebar",
           "title": "神码Code",
           "icon": "$(hubot)"
         }
       ]
     },
     "views": {
-      "codeshell_sidebar": [
+      "codedcit_sidebar": [
         {
-          "id": "codeshell.chatView",
+          "id": "codedcit.chatView",
           "name": "神码Code",
           "type": "webview"
         }

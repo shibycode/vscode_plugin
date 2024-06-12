@@ -5,7 +5,7 @@ import { postEventStream, stopEventStream } from "./request/event-source";
 import { sleep } from "./Utils";
 
 export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider {
-	public static readonly viewId = "codeshell.chatView";
+	public static readonly viewId = "codedcit.chatView";
 	private _view?: vscode.WebviewView;
 	private _extensionUri: vscode.Uri;
 
@@ -83,7 +83,6 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 		const selection = vscode.window.activeTextEditor?.selection;
 		const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
 		if (!selectedText) {
-			// vscode.window.showErrorMessage("请选中一段代码！");
 			vscode.window.showErrorMessage(vscode.l10n.t("Please select a section of code"));
 			return;
 		}
@@ -95,39 +94,39 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 
 		let humanPrompt = "";
 		switch (command) {
-			case "codeshell.explain_this_code": {
+			case "codedcit.explain_this_code": {
 				humanPrompt = prompt.createPromptCodeExplain(languageId, selectedText);
 				break;
 			}
-			case "codeshell.improve_this_code": {
+			case "codedcit.improve_this_code": {
 				humanPrompt = prompt.createPromptCodeImprove(languageId, selectedText);
 				break;
 			}
-			case "codeshell.clean_this_code": {
+			case "codedcit.clean_this_code": {
 				humanPrompt = prompt.createPromptCodeClean(languageId, selectedText);
 				break;
 			}
-			case "codeshell.generate_comment": {
+			case "codedcit.generate_comment": {
 				humanPrompt = prompt.createPromptGenerateComment(languageId, selectedText);
 				break;
 			}
-			case "codeshell.generate_unit_test": {
+			case "codedcit.generate_unit_test": {
 				humanPrompt = prompt.createPromptGenerateUnitTest(languageId, selectedText);
 				break;
 			}
-			case "codeshell.check_performance": {
+			case "codedcit.check_performance": {
 				humanPrompt = prompt.createPromptCheckPerformance(languageId, selectedText);
 				break;
 			}
-			case "codeshell.check_security": {
+			case "codedcit.check_security": {
 				humanPrompt = prompt.createPromptCheckSecurity(languageId, selectedText);
 				break;
 			}
 		}
 
-		// focus gpt activity from activity bar
+		//   // 从活动栏中获取焦点以执行gpt活动
 		if (!this._view) {
-			await vscode.commands.executeCommand("codeshell.chatView.focus");
+			await vscode.commands.executeCommand("codedcit.chatView.focus");
 			await sleep(1000);
 		} else {
 			this._view?.show?.(true);
@@ -152,6 +151,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 		this.generateAnswer(contentIndex);
 	}
 
+	// 获取sessionItem的历史记录和当前问题的答案，并显示在webview中
 	private generateAnswer(index: number) {
 		const chatItem = this.sessionItem.chatList[index];
 		chatItem.aiMessage.content = "";
@@ -163,6 +163,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 			"aiMsgId": chatItem.aiMsgId,
 		};
 		console.log("historyPrompt:", historyPrompt);
+		// 调接口成功 后发送历史记录和当前问题的答案给webview
 		postEventStream(historyPrompt, (data) => {
 			console.log("generateAnswer.streamData:", data);
 			chatItem.aiMessage.append(data);
@@ -171,11 +172,13 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 			respData.aiMsgId = chatItem.aiMsgId;
 			this._view?.webview.postMessage({ type: "addStreamResponse", value: respData });
 		}, () => {
+			// 接口返回值为空
 			console.log("generateAnswer.requstsDone:", chatItem.aiMessage.content);
 			this.sessionStore.update(this.sessionItem);
 			this._view?.webview.postMessage({ type: "responseStreamDone", value: respData });
 			vscode.window.showInformationMessage(vscode.l10n.t("Answer output completed"));
 		}, (_err) => {
+			// 接口请求失败
 			this.sessionStore.update(this.sessionItem);
 			this._view?.webview.postMessage({ type: "responseStreamDone", value: respData });
 		});
