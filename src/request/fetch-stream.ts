@@ -28,32 +28,6 @@ export class FetchStream {
   }
 
   createFetchRequest() {
-    // const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
-    //   if (event.type === "event") {
-    //     this.onmessage(event.data);
-    //   }
-    // });
-
-    // fetch(this.url, this.requestInit)
-    //   .then(response => {
-    //     if (response.status === 200) {
-    //       return response.body!;
-    //     } else {
-    //       return Promise.reject(response);
-    //     }
-    //   }).then(async (readableStream) => {
-    //     for await (const chunk of readableStream) {
-    //       parser.feed(chunk.toString());
-    //     }
-    //   }).then(() => {
-    //     this.ondone?.();
-    //   }).catch(error => {
-    //     console.error(error);
-    //     window.showErrorMessage(`${error}`);
-    //     window.setStatusBarMessage(`${error}`, 10000);
-    //     this.onerror?.(error);
-    //   });
-
       axios.post(this.url, this.requestInit.body)
 		  .then(response => {
 			  console.log(response.data);
@@ -64,6 +38,7 @@ export class FetchStream {
         }
 		  })
 		  .catch(error => {
+        console.error(error);
         window.showErrorMessage(`${error}`);
         window.setStatusBarMessage(`${error}`, 10000);
         this.onerror?.(error);

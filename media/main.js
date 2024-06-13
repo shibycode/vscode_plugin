@@ -65,6 +65,7 @@
     showChat_hideHistory();
   }
 
+  // 展示ai回复 
   function addStreamResponse(eventData) {
     const contentIndex = eventData.contentIndex;
     const responseText = fixCodeBlocks(eventData.responseText);
@@ -86,19 +87,15 @@
     if (!testNextDiv) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
-
-    document.getElementById("btn-stop-streaming").style.display = "block";
+    // 停止生成按钮 先不用
+    // document.getElementById("btn-stop-streaming").style.display = "none";
   }
 
+  // ai回复为空 || 接口请求失败
   function responseStreamDone(eventData) {
     const contentIndex = eventData.contentIndex;
     const responseText = eventData.responseText;
 
-    // const aiMsgId = eventData.aiMsgId;
-    // span = document.createElement("span");
-    // span.innerText = `ai message id =  ${aiMsgId}`;
-    // const outputDiv = document.getElementById(`outputDiv${contentIndex}`);
-    // outputDiv.append(span);
 
     answerCopyBtn(contentIndex, responseText);
     answerRefreshBtn(contentIndex);
@@ -106,7 +103,8 @@
     handleFeedbackBtns(eventData);
 
     hljs.highlightAll();
-    document.getElementById("btn-stop-streaming").style.display = "none";
+    // 停止生成按钮 先不用
+    // document.getElementById("btn-stop-streaming").style.display = "none";
   }
 
   function handleFeedbackBtns(eventData) {
@@ -316,7 +314,10 @@
     hisDiv.style.display = "none";
   }
 
+  // 展示历史对话List
   function hideChat_showHistory() {
+    // 隐藏对话框前 保存当前对话框内容
+    vscode.postMessage({ type: "startNewSession" });
     let chatDiv = document.getElementById("main-div-aichat");
     chatDiv.style.display = "none";
 
@@ -324,6 +325,7 @@
     hisDiv.style.display = "block";
   }
 
+  // input框 监听键盘事件
   document.getElementById("questioninput").addEventListener("keydown", event => {
     const textarea = event.target;
     console.debug("event.key =", event.key, ", event.keyCode = ", event.keyCode);
@@ -352,6 +354,7 @@
     }
   });
 
+  // input框 发送按钮 点击事件
   document.getElementById("send-button-img").addEventListener("click", event => {
     const textarea = document.getElementById("questioninput");
     if (textarea.value && textarea.value.trim().length > 0) {
@@ -361,6 +364,7 @@
     }
   });
 
+  // 开启新对话
   document.getElementById("add_session_btn").addEventListener("click", event => {
     vscode.postMessage({ type: "startNewSession" });
     let element = document.getElementById("chatContainerQuestionListId");
@@ -376,6 +380,7 @@
     showChat_hideHistory();
   });
 
+  // 停止生成按钮
   document.getElementById("btn-stop-streaming").addEventListener("click", event => {
     vscode.postMessage({ type: "stopGenerationStream" });
   });

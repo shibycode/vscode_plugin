@@ -33,10 +33,10 @@ export class CodeShellCompletionProvider implements InlineCompletionItemProvider
         }
 
         this.statusBar.text = "$(loading~spin)";
-        this.statusBar.tooltip = "CodeShell - Working";
+        this.statusBar.tooltip = "CodeDcit - Working";
         return postCompletion(fimPrefixCode, fimSuffixCode).then((response) => {
             this.statusBar.text = "$(light-bulb)";
-            this.statusBar.tooltip = `CodeShell - Ready`;
+            this.statusBar.tooltip = `CodeDcit - Ready`;
             if (token.isCancellationRequested || !response || this.isNil(response.trim())) {
                 return Promise.resolve(([] as InlineCompletionItem[]));
             }
@@ -44,7 +44,7 @@ export class CodeShellCompletionProvider implements InlineCompletionItemProvider
         }).catch((error) => {
             console.error(error);
             this.statusBar.text = "$(alert)";
-            this.statusBar.tooltip = "CodeShell - Error";
+            this.statusBar.tooltip = "CodeDcit - Error";
             window.setStatusBarMessage(`${error}`, 10000);
             return Promise.resolve(([] as InlineCompletionItem[]));
         }).finally(() => {

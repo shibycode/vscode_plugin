@@ -16,7 +16,6 @@
     "Check Security": "检查 安全性问题",
     "Check the following {0} code for any security issues, and please provide optimization suggestions": "检查以下{0}代码, 是否存在安全性问题，请给出优化建议",
     "select coding task": "选择快捷指令：",
-    "Ask CodeShell": "向CodeShell提问",
     "Please enter your question description": "请输入您的问题描述",
     "question description": "问题描述",
     "Start a new session": "开启新会话",
