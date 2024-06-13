@@ -96,6 +96,11 @@
     const contentIndex = eventData.contentIndex;
     const responseText = eventData.responseText;
 
+    // 给定默认回复
+    const html = showdownConverter.makeHtml('出问题了，请重试');
+    const outputDiv = document.getElementById(`outputDiv${contentIndex}`);
+    outputDiv.innerHTML = null;
+    outputDiv.innerHTML = fixCodeClasses(html);
 
     answerCopyBtn(contentIndex, responseText);
     answerRefreshBtn(contentIndex);
