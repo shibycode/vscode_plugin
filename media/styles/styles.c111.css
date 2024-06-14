@@ -110,7 +110,7 @@ body.body-y-scroll {
 
 .history-btn:hover .history-buttons,
 .history-buttons:hover {
-    color: #fff
+    color: var(--vscode-editor-foreground)
 }
 
 .empty-placeholder {
@@ -495,7 +495,7 @@ a.send-disabled {
 pre code.hljs {
     display: block;
     overflow-x: hidden;
-    background: #212224;
+    background: var(--vscode-breadcrumb-background);
     border-radius: 0 0 4px 4px;
     padding: 12px;
     margin: 0;

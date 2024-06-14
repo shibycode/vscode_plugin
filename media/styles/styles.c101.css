@@ -110,7 +110,7 @@ body.body-y-scroll {
 
 .history-btn:hover .history-buttons,
 .history-buttons:hover {
-    color: #fff
+    color: var(--vscode-editor-foreground)
 }
 
 .empty-placeholder {
@@ -432,7 +432,7 @@ ul {
 pre code.hljs {
     display: block;
     overflow-x: hidden;
-    background: #212224;
+    background: var(--vscode-breadcrumb-background);
     border-radius: 0 0 4px 4px;
     padding: 12px;
     margin: 0;
@@ -555,7 +555,6 @@ pre {
     font-weight: 600;
     font-size: var(--font13);
     line-height: 150%;
-    color: #fff;
     min-height: 20px;
     text-overflow: ellipsis;
     white-space: nowrap;
