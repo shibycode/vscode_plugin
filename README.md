@@ -55,7 +55,7 @@ VSCode中执行`Install from VSIX...`命令，选择`codedcit-vscode-${VERSION_N
 
 在vscode侧边栏中打开插件问答界面，在编辑器中选中一段代码，在鼠标右键CodeShell菜单中选择对应的功能项，插件将在问答界面中给出相应的答复。
 
-![代码辅助截图](https://raw.githubusercontent.com/WisdomShell/codeshell-vscode/main/assets/readme/docs_assistants.png)
+![代码辅助截图](https://github.com/shibycode/vscode_plugin/blob/main/assets/readme/docs_assistants.png)
 
 ### 3. 智能问答
 
@@ -66,14 +66,6 @@ VSCode中执行`Install from VSIX...`命令，选择`codedcit-vscode-${VERSION_N
 - 对任一问题，可重新获取回答
 - 在回答过程中，可以打断
 
-![智能问答截图](https://raw.githubusercontent.com/WisdomShell/codeshell-vscode/main/assets/readme/docs_chat.png)
+![智能问答截图](https://github.com/shibycode/vscode_plugin/blob/main/assets/readme/docs_chat.png)
 
 在问答界面的代码块中，可以点击复制按钮复制该代码块，也可点击插入按钮将该代码块内容插入到编辑器光标处。
-
-## 开源协议
-
-Apache 2.0
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=WisdomShell/codeshell-vscode&type=Date)](https://star-history.com/#WisdomShell/codeshell-vscode&Date)

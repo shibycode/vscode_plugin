@@ -10,6 +10,7 @@ import { CODESHELL_CONFIG } from "./consts";
 export function activate(context: vscode.ExtensionContext) {
 	registerCompleteionExtension(context);
 	registerWebviewViewExtension(context);
+    registerSettingCommand(context);
 }
 
 // This method is called when your extension is deactivated
@@ -70,5 +71,19 @@ function registerCompleteionExtension(context: vscode.ExtensionContext) {
  } else {
   vscode.commands.executeCommand("codedcit.auto_completion_disable");
  }
+}
+
+// 注册命令 打开插件设置
+function registerSettingCommand(context: vscode.ExtensionContext) {
+    // 创建一个命令
+    const openSettingsCommand = vscode.commands.registerCommand('codedcit.open.settings', function() {
+        // 插件的标识符
+        const pluginId = '@ext:wisdomshell.codedcit-vscode';
+        // 执行内置命令打开特定插件的设置
+        vscode.commands.executeCommand('workbench.action.openSettings', { query: pluginId });
+    });
+
+    // 将命令的可处置对象添加到插件的上下文中
+    context.subscriptions.push(openSettingsCommand);
 }
 

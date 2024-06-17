@@ -334,7 +334,8 @@ ul {
     bottom: 0;
     width: 100%;
     left: 0;
-    padding: 10px
+    padding: 10px;
+    background: var(--vscode-breadcrumb-background);
 }
 
 a.send {
@@ -530,8 +531,10 @@ pre {
 }
 
 #questioninput {
-    overflow: hidden;
-    border-bottom: none !important
+    border-bottom: none !important;
+    overflow-y: auto;
+    min-height: 35px;
+    height: auto;
 }
 
 @media (max-width: 250px) {
@@ -544,9 +547,6 @@ pre {
         margin-bottom: 8px
     }
 
-    #questioninput {
-        overflow: auto !important
-    }
 }
 
 .preCodeBlockText {

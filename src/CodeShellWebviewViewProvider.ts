@@ -262,7 +262,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 				<div class="row mr-0">
 					<div class="col-4 pr-0"><div class="question-title">${vscode.l10n.t("Question :")}</div></div>
 					<div class="col-8 p-0" style="align-items: center; display: flex; justify-content: flex-end;">
-						<div class="edit-btn focus-on-tab inner-btns" style="float: right;" id="editBtn${contentIndex}">
+						<div class="edit-btn focus-on-tab inner-btns" style="float: right;" title="Edit" id="editBtn${contentIndex}">
 							<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
 								<path d="M816.277333 165.056a128 128 0 0 1 0 181.013333L309.653333 852.693333a21.333333 21.333333 0 0 1-15.082666 6.229334H165.056a42.666667 42.666667 0 0 1-42.666667-42.666667v-129.493333a21.333333 21.333333 0 0 1 6.229334-15.104L635.306667 165.056a128 128 0 0 1 180.992 0z m-45.226666 45.226667a64 64 0 0 0-87.786667-2.56l-2.752 2.56L188.885333 701.930667a8.533333 8.533333 0 0 0-2.496 6.037333v78.464c0 4.714667 3.818667 8.533333 8.533334 8.533333h78.421333a8.533333 8.533333 0 0 0 6.037333-2.517333l491.648-491.605333a64 64 0 0 0 2.581334-87.786667l-2.56-2.730667z" fill="#ffffff" p-id="6891"></path><path d="M590.016 210.304l181.013333 181.013333-45.248 45.248-181.013333-181.013333z" fill="#ffffff" p-id="6892"></path><path d="M490.666667 795.733333m8.533333 0l345.6 0q8.533333 0 8.533333 8.533334l0 46.933333q0 8.533333-8.533333 8.533333l-345.6 0q-8.533333 0-8.533333-8.533333l0-46.933333q0-8.533333 8.533333-8.533334Z" fill="#ffffff" p-id="6893"></path><path d="M661.333333 667.733333m8.533334 0l174.933333 0q8.533333 0 8.533333 8.533334l0 46.933333q0 8.533333-8.533333 8.533333l-174.933333 0q-8.533333 0-8.533334-8.533333l0-46.933333q0-8.533333 8.533334-8.533334Z" fill="#ffffff" p-id="6894"></path>
 							</svg>
@@ -276,12 +276,12 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 					<div class="answer-title">${vscode.l10n.t("Answer :")}</div>
 				</div>
 				<div class="col-8 p-0" style="align-items: center; display: flex; justify-content: flex-end;">
-					<div class="copy-btn copy-btn-icon focus-on-tab inner-btns" style="float: right;" id="refreshBtn${contentIndex}">
+					<div class="copy-btn copy-btn-icon focus-on-tab inner-btns" title="Retry" style="float: right;" id="refreshBtn${contentIndex}">
 						<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
 							<path d="M866.133333 85.333333c4.693333 0 8.533333 3.84 8.533334 8.533334v194.133333a32 32 0 0 1-28.928 31.850667L842.666667 320h-194.133334a8.533333 8.533333 0 0 1-8.533333-8.533333v-46.933334c0-4.693333 3.84-8.533333 8.533333-8.533333h120.341334A361.536 361.536 0 0 0 512 149.333333C311.701333 149.333333 149.333333 311.701333 149.333333 512s162.368 362.666667 362.666667 362.666667c185.813333 0 339.008-139.776 360.170667-319.914667 0.384-3.328 0.810667-7.829333 1.28-13.546667a8.533333 8.533333 0 0 1 8.512-7.850666h47.061333a8.533333 8.533333 0 0 1 8.533333 9.109333c-0.426667 5.696-0.789333 10.218667-1.130666 13.589333C914.346667 770.986667 732.778667 938.666667 512 938.666667 276.352 938.666667 85.333333 747.648 85.333333 512S276.352 85.333333 512 85.333333c116.288 0 221.717333 46.506667 298.666667 121.984V93.866667c0-4.693333 3.84-8.533333 8.533333-8.533334h46.933333z" fill="#ffffff" p-id="2282"></path>
 						</svg>
 					</div>
-					<div class="copy-btn copybtn-icn focus-on-tab inner-btns" style="float: right;" id="copyBtn${contentIndex}">
+					<div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Copy" style="float: right;" id="copyBtn${contentIndex}">
 						<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
 							<path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z" p-id="5754" fill="#ffffff"></path><path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="5755" fill="#ffffff"></path><path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="5756" fill="#ffffff"></path><
 						/svg>
@@ -438,7 +438,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 													<textarea nz-input aria-label="ai-input-box"
 														required apptextareaautoresize id="questioninput" autofocus
 														class="form-control chat-input ant-input ng-touched ng-dirty ng-invalid"
-														placeholder='${vscode.l10n.t("Ask here, press Enter key to send")}' style="height: 35px; overflow: hidden;"></textarea>
+														placeholder='${vscode.l10n.t("Ask here, press Enter key to send")}'></textarea>
 													<div id="reply-buttons2" class="reply-buttons2"
 														style="overflow: hidden;">
 														<div class="row">

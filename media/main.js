@@ -163,7 +163,7 @@
       div = document.createElement("div")
       div.classList.add("p0", "operations")
       div.innerHTML = `<div class="copy-btn copy-btn-icon inner-btns" style="float: right;"> 
-      <div class="copy-btn copybtn-icn focus-on-tab inner-btns" style="float: right;" id="codeCopyBtn_${blockIndex}">
+      <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Copy" style="float: right;" id="codeCopyBtn_${blockIndex}">
         <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
           <path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z" p-id="5754" fill="#ffffff"></path><path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="5755" fill="#ffffff"></path><path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="5756" fill="#ffffff"></path><
         /svg>
@@ -173,7 +173,7 @@
           <path d="M369.792 704.32L930.304 128 1024 223.616 369.984 896l-20.288-20.864-0.128 0.128L0 516.8 96.128 423.68l273.664 280.64z" fill="#1296db" p-id="4526"></path>
         </svg>
       </div>
-      <div class="copy-btn copybtn-icn focus-on-tab inner-btns" style="float: right;" id="codeInsertBtn_${blockIndex}">
+      <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Insert" style="float: right;" id="codeInsertBtn_${blockIndex}">
         <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
           <path d="M320.984615 240.246154L275.692308 202.830769c-13.784615-9.846154-29.538462-7.876923-41.353846 3.938462L5.907692 494.276923c-7.876923 9.846154-7.876923 25.6 0 37.415385L236.307692 817.230769c9.846154 11.815385 27.569231 15.753846 41.353846 3.938462l45.292308-37.415385c13.784615-9.846154 15.753846-29.538462 3.938462-41.353846L141.784615 512l187.076923-230.4c7.876923-11.815385 5.907692-29.538462-7.876923-41.353846z m697.107693 254.030769L787.692308 208.738462c-9.846154-11.815385-27.569231-15.753846-41.353846-3.938462l-45.292308 37.415385c-13.784615 9.846154-15.753846 29.538462-3.938462 41.353846l187.076923 230.4-187.076923 230.4c-9.846154 11.815385-7.876923 31.507692 3.938462 41.353846l45.292308 37.415385c13.784615 9.846154 29.538462 7.876923 41.353846-3.938462L1018.092308 531.692308c7.876923-13.784615 7.876923-27.569231 0-37.415385zM622.276923 212.676923l-59.076923-13.784615c-15.753846-3.938462-33.476923 5.907692-37.415385 21.661538l-145.723077 559.261539c-3.938462 15.753846 5.907692 31.507692 21.661539 35.446153l59.076923 13.784616c15.753846 3.938462 33.476923-5.907692 37.415385-21.661539l145.723077-559.261538c3.938462-17.723077-5.907692-31.507692-21.661539-35.446154z" fill="#FFFFFF" p-id="3495"></path>
         </svg>
@@ -261,7 +261,7 @@
 
     const textarea = document.getElementById("questioninput");
     textarea.value = "";
-    textarea.style.height = `35px`;
+    textarea.style.height = 'auto';
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }
 
@@ -347,15 +347,26 @@
       if (textarea.value && textarea.value.trim().length > 0) {
         vscode.postMessage({ type: "startQuestion", value: textarea.value.trim() });
         textarea.value = "";
-        textarea.style.height = `35px`;
+        textarea.style.height = 'auto';
       }
     }
   });
 
+//  监听 textarea 内容变化事件
+document.getElementById("questioninput").addEventListener("input", event => {
+  const textarea = event.target;
+   // 重置 textarea 高度为默认高度，以便测量内容的真实高度
+   textarea.style.height = 'auto';
+
+   // 检查内容的滚动高度，并设置 textarea 的高度
+   textarea.style.height = textarea.scrollHeight + 'px';
+});
+
+
   document.getElementById("questioninput").addEventListener("keyup", event => {
     const textarea = event.target;
-    if (textarea.value && textarea.value.trim().length === 0) {
-      textarea.style.height = `35px`;
+    if (textarea.value.trim().length === 0) {
+      textarea.style.height = 'auto';
     }
   });
 
@@ -365,7 +376,7 @@
     if (textarea.value && textarea.value.trim().length > 0) {
       vscode.postMessage({ type: "startQuestion", value: textarea.value.trim() });
       textarea.value = "";
-      textarea.style.height = `35px`;
+      textarea.style.height = 'auto';
     }
   });
 

@@ -4,7 +4,7 @@
   "description": "Coding with CodeDcit LLM",
   "publisher": "WisdomShell",
   "version": "0.1.1",
-  "icon": "$(hubot)",
+  "icon": "assets/logo.png",
   "keywords": [
     "code-suggestion",
     "code-completion",
@@ -143,6 +143,14 @@
         "command": "codedcit.check_security",
         "title": "%codedcit.check_security.title%",
         "category": "codedcit"
+      },
+      {
+        "command": "codedcit.open.settings",
+        "title": "Setting",
+        "icon": {
+          "dark": "assets/setting_dark.svg",
+          "light": "assets/setting_light.svg"
+        }
       }
     ],
     "submenus": [
@@ -203,6 +211,12 @@
           "command": "codedcit.check_security",
           "group": "group4@2",
           "when": "editorHasSelection"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "codedcit.open.settings",
+          "group": "navigation"
         }
       ]
     },
