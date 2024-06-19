@@ -78,7 +78,7 @@ function registerSettingCommand(context: vscode.ExtensionContext) {
     // 创建一个命令
     const openSettingsCommand = vscode.commands.registerCommand('codedcit.open.settings', function() {
         // 插件的标识符
-        const pluginId = '@ext:wisdomshell.codedcit-vscode';
+        const pluginId = '@ext:CodeDcit.codedcit-vscode';
         // 执行内置命令打开特定插件的设置
         vscode.commands.executeCommand('workbench.action.openSettings', { query: pluginId });
     });

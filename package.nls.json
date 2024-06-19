@@ -7,5 +7,11 @@
     "codedcit.generate_comment.title": "Generate Comment",
     "codedcit.generate_unit_test.title": "Generate Unit Test",
     "codedcit.check_performance.title": "Check Performance",
-    "codedcit.check_security.title": "Check Security"
+    "codedcit.check_security.title": "Check Security",
+    "codedcit.switch.model": "Switch to the large model currently in use.",
+    "codedcit.auto.completion": "Whether or not to automatically trigger completion when typing.",
+    "codedcit.delay.time": "The delay in seconds before automatic code completion triggers.",
+    "codedcit.completion.max.tokens": "Maximum number of tokens for which suggestions will be displayed",
+    "codedcit.chat.max.tokens": "Maximum number of tokens for which chat messages will be displayed"
+
 }

@@ -2,7 +2,7 @@
   "name": "codedcit-vscode",
   "displayName": "CodeDcit VSCode Extension",
   "description": "Coding with CodeDcit LLM",
-  "publisher": "WisdomShell",
+  "publisher": "CodeDcit",
   "version": "0.1.1",
   "icon": "assets/logo.png",
   "keywords": [
@@ -30,30 +30,14 @@
     "configuration": {
       "title": "CodeDcit",
       "properties": {
-        "CodeDcit.ServerAddress": {
-          "description": "The address of the CodeDcit server to connect to.",
-          "default": "http://127.0.0.1:8080",
-          "type": "string",
-          "order": 1
-        },
-        "CodeDcit.RunEnvForLLMs": {
-          "description": "The environment that should be used for running LLMs.",
-          "default": "CPU with llama.cpp",
-          "enum": [
-            "CPU with llama.cpp",
-            "GPU with TGI toolkit"
-          ],
-          "type": "string",
-          "order": 2
-        },
         "CodeDcit.AutoTriggerCompletion": {
-          "description": "Whether or not to automatically trigger completion when typing.",
+          "description": "%codedcit.auto.completion%",
           "default": true,
           "type": "boolean",
-          "order": 6
+          "order": 1
         },
         "CodeDcit.AutoCompletionDelay": {
-          "description": "The delay in seconds before automatic code completion triggers.",
+          "description": "%codedcit.delay.time%",
           "type": "number",
           "enum": [
             1,
@@ -61,10 +45,20 @@
             3
           ],
           "default": 1,
-          "order": 7
+          "order": 2
+        },
+        "CodeDcit.SwitchModel": {
+          "description":  "%codedcit.switch.model%",
+          "default": "Phind-CodeLlama-34B-v2-GPTQ",
+          "enum": [
+            "Phind-CodeLlama-34B-v2-GPTQ",
+            "Qwen1.5-14B-Chat"
+          ],
+          "type": "string",
+          "order": 3
         },
         "CodeDcit.CompletionMaxTokens": {
-          "description": "Maximum number of tokens for which suggestions will be displayed",
+          "description": "%codedcit.completion.max.tokens%",
           "type": "number",
           "enum": [
             64,
@@ -74,10 +68,10 @@
             1024
           ],
           "default": 64,
-          "order": 8
+          "order": 4
         },
         "CodeDcit.ChatMaxTokens": {
-          "description": "Maximum number of tokens for which chat messages will be displayed",
+          "description": "%codedcit.chat.max.tokens%",
           "type": "number",
           "enum": [
             1024,
@@ -86,7 +80,7 @@
             8192
           ],
           "default": 2048,
-          "order": 9
+          "order": 5
         }
       }
     },

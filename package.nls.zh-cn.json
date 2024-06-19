@@ -7,5 +7,11 @@
     "codedcit.generate_comment.title": "生成 注释",
     "codedcit.generate_unit_test.title": "生成 单元测试",
     "codedcit.check_performance.title": "检查 性能问题",
-    "codedcit.check_security.title": "检查 安全性问题"
+    "codedcit.check_security.title": "检查 安全性问题",
+    "codedcit.switch.model": "切换大模型",
+    "codedcit.auto.completion": "是否在输入时自动触发补全。",
+    "codedcit.delay.time": "自动补全触发延时(秒)",
+    "codedcit.completion.max.tokens": "自动补全最大令牌数",
+    "codedcit.chat.max.tokens": "自动补全最大令牌数"
+
 }

@@ -48,7 +48,9 @@
     return responseText.replace(/<code(.*?)class="(.*?)"(.*?)>/gi, '<code$1$3>');
   };
 
+// 开始提问
   function addQuestionAnswerDiv(eventData) {
+    // document.getElementById("btn-stop-streaming").style.display = "flex";
     let chatContainer = document.getElementById("chatContainerQuestionListId");
 
     div = document.createElement("div")
@@ -87,7 +89,7 @@
     if (!testNextDiv) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
-    // 停止生成按钮 先不用
+    // 停止生成按钮 暂时不用
     // document.getElementById("btn-stop-streaming").style.display = "none";
   }
 
@@ -108,7 +110,7 @@
     handleFeedbackBtns(eventData);
 
     hljs.highlightAll();
-    // 停止生成按钮 先不用
+    // 停止生成按钮 暂时不用
     // document.getElementById("btn-stop-streaming").style.display = "none";
   }
 
@@ -178,6 +180,11 @@
           <path d="M320.984615 240.246154L275.692308 202.830769c-13.784615-9.846154-29.538462-7.876923-41.353846 3.938462L5.907692 494.276923c-7.876923 9.846154-7.876923 25.6 0 37.415385L236.307692 817.230769c9.846154 11.815385 27.569231 15.753846 41.353846 3.938462l45.292308-37.415385c13.784615-9.846154 15.753846-29.538462 3.938462-41.353846L141.784615 512l187.076923-230.4c7.876923-11.815385 5.907692-29.538462-7.876923-41.353846z m697.107693 254.030769L787.692308 208.738462c-9.846154-11.815385-27.569231-15.753846-41.353846-3.938462l-45.292308 37.415385c-13.784615 9.846154-15.753846 29.538462-3.938462 41.353846l187.076923 230.4-187.076923 230.4c-9.846154 11.815385-7.876923 31.507692 3.938462 41.353846l45.292308 37.415385c13.784615 9.846154 29.538462 7.876923 41.353846-3.938462L1018.092308 531.692308c7.876923-13.784615 7.876923-27.569231 0-37.415385zM622.276923 212.676923l-59.076923-13.784615c-15.753846-3.938462-33.476923 5.907692-37.415385 21.661538l-145.723077 559.261539c-3.938462 15.753846 5.907692 31.507692 21.661539 35.446153l59.076923 13.784616c15.753846 3.938462 33.476923-5.907692 37.415385-21.661539l145.723077-559.261538c3.938462-17.723077-5.907692-31.507692-21.661539-35.446154z" fill="#FFFFFF" p-id="3495"></path>
         </svg>
       </div>
+      <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="addFile" style="float: right;" id="addFileBtn_${blockIndex}">
+        <svg t="1718678489393" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6043" width="16" height="16">
+          <path fill="#FFFFFF"  d="M859.989333 768H704v-155.989333a35.968 35.968 0 1 0-72.021333 0V768h-147.968a35.968 35.968 0 1 0 0 72.021333h148.010666v147.968a35.968 35.968 0 1 0 71.978667 0v-147.968h155.989333a35.968 35.968 0 1 0 0-72.021333z m15.104-466.218667L597.12 21.333333a77.44 77.44 0 0 0-14.805333-11.52 60.928 60.928 0 0 0-4.394667-2.261333c-0.938667-0.512-1.92-0.896-2.816-1.28A72.362667 72.362667 0 0 0 546.005333 0h-346.026666C160.256 0 128 32.213333 128 72.021333v880C128 991.744 160.213333 1024 200.021333 1024h211.968a35.968 35.968 0 1 0 0-72.021333H199.978667V72.021333H512v240C512 351.786667 544.213333 384 584.021333 384h239.957334v155.989333a35.968 35.968 0 1 0 72.021333 0V352.512c0-19.029333-7.509333-37.205333-20.906667-50.730667z m-291.114666 10.24V110.421333l199.808 201.557334h-199.808z" p-id="6044"></path>
+        </svg>
+      </div>
       </div>`
       preBlock.prepend(div);
     }
@@ -213,6 +220,12 @@
           copyCheck.style.display = "none";
           insertBtn.style.display = "flex";
         }, 2000);
+      });
+      
+      let addFileBtn = document.getElementById(`addFileBtn_${blockIndex}`);
+      addFileBtn.addEventListener("click", (e) => {
+        navigator.clipboard.writeText(preBlock.innerText);
+        vscode.postMessage({ type: "addFileCode", value: preBlock.innerText });
       });
     }
   }

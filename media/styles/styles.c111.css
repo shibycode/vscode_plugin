@@ -422,7 +422,7 @@ a.send-disabled {
     vertical-align: middle;
     display: flex;
     align-items: center;
-    color: #7a8084;
+    color: var(--vscode-editor-foreground) !important;
     cursor: pointer
 }
 
@@ -719,6 +719,63 @@ a.redo {
     .tzs-stop-streaming-button-section {
         margin-top: -45px
     }
+}
+
+.generating-and-stop {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    width: 100%;
+}
+
+.generating-and-stop .generating-and-stop-inner {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 0 12px;
+    padding: 8px;
+    width: 100%;
+    background-color: var(--vscode-editor-background);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.generating-and-stop .generating-and-stop-inner .generating-and-stop-left {
+    flex-wrap: wrap;
+}
+
+.generating-and-stop .generating-and-stop-inner .generating-and-stop-left>* {
+    white-space: nowrap;
+    margin-bottom: 6px;
+}
+
+.anticon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--vscode-editor-foreground);
+    font-style: normal;
+    line-height: 0;
+    text-align: center;
+    text-transform: none;
+    vertical-align: -0.125em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.anticon svg {
+    display: inline-block;
+}
+
+.generating-and-stop .generating-and-stop-inner .generating-and-stop-right, .generating-and-stop .generating-and-stop-inner .generating-and-stop-left {
+    display: flex;
+    align-items: center;
+}
+
+.generating-and-stop-right {
+    cursor: pointer;
 }
 
 .session-buttons {
