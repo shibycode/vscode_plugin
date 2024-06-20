@@ -50,7 +50,9 @@
 
 // 开始提问
   function addQuestionAnswerDiv(eventData) {
-    // document.getElementById("btn-stop-streaming").style.display = "flex";
+    document.getElementById("generte-stop").style.display = "flex";
+    document.getElementById("btn-stop-streaming").style.display = "flex";
+    document.getElementById("refreshBtn").style.display = "none";
     let chatContainer = document.getElementById("chatContainerQuestionListId");
 
     div = document.createElement("div")
@@ -79,9 +81,9 @@
     addCodeBlockButtons(contentIndex);
     hljs.highlightAll();
 
-    answerCopyBtn(contentIndex, responseText);
-    // 复制按钮事件
+    // 重新回答
     answerRefreshBtn(contentIndex);
+    
     codeBlockButtonEvent(contentIndex);
 
     const chatContainer = document.getElementById("chatContainerQuestionListId");
@@ -89,8 +91,9 @@
     if (!testNextDiv) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
-    // 停止生成按钮 暂时不用
-    // document.getElementById("btn-stop-streaming").style.display = "none";
+    // 停止生成按钮 
+    document.getElementById("btn-stop-streaming").style.display = "none";
+    document.getElementById("refreshBtn").style.display = "flex";
   }
 
   // ai回复为空 || 接口请求失败
@@ -104,14 +107,15 @@
     outputDiv.innerHTML = null;
     outputDiv.innerHTML = fixCodeClasses(html);
 
-    answerCopyBtn(contentIndex, responseText);
+    // answerCopyBtn(contentIndex, responseText);
     answerRefreshBtn(contentIndex);
     codeBlockButtonEvent(contentIndex);
     handleFeedbackBtns(eventData);
 
     hljs.highlightAll();
     // 停止生成按钮 暂时不用
-    // document.getElementById("btn-stop-streaming").style.display = "none";
+    document.getElementById("btn-stop-streaming").style.display = "none";
+    document.getElementById("refreshBtn").style.display = "flex";
   }
 
   function handleFeedbackBtns(eventData) {
@@ -154,6 +158,7 @@
     }
   }
 
+  // 回复的代码块添加复制 插入 保存到文件 按钮
   function addCodeBlockButtons(outputIndex) {
     const outputDiv = document.getElementById(`outputDiv${outputIndex}`);
     const preBlocks = outputDiv.querySelectorAll("pre");
@@ -190,6 +195,7 @@
     }
   }
 
+  //回复代码块的复制 插入 保存到文件 按钮添加处理事件
   function codeBlockButtonEvent(outputIndex) {
     const outputDiv = document.getElementById(`outputDiv${outputIndex}`);
     const preBlocks = outputDiv.querySelectorAll("pre");
@@ -265,7 +271,7 @@
       document.getElementById(`outputDiv${i}`).innerHTML = fixCodeClasses(aHtml);
 
       questionEditBtn(i, question);
-      answerCopyBtn(i, answer);
+      // answerCopyBtn(i, answer);
       answerRefreshBtn(i);
       addCodeBlockButtons(i);
       codeBlockButtonEvent(i);
@@ -309,14 +315,15 @@
     copyBtn.addEventListener("click", copyBtn.clickHandler);
   }
 
+  // 重新回答
   function answerRefreshBtn(index) {
-    let refreshBtn = document.getElementById(`refreshBtn${index}`);
-    refreshBtn.style.display = "block";
+    let refreshBtn = document.getElementById('refreshBtn');
     if (refreshBtn.clickHandler) {
       refreshBtn.removeEventListener("click", refreshBtn.clickHandler);
     }
     refreshBtn.clickHandler = (e) => {
       refreshBtn.style.display = "none";
+      document.getElementById("btn-stop-streaming").style.display = "flex";
       // loading
       document.getElementById(`outputDiv${index}`).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="18" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="6" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin="0" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>`;
       vscode.postMessage({ type: "regenerateThisAnswer", value: index });

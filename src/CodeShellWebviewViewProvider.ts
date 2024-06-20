@@ -8,6 +8,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 	public static readonly viewId = "codedcit.chatView";
 	private _view?: vscode.WebviewView;
 	private _extensionUri: vscode.Uri;
+	private stopGeneate: boolean;
 
 	private sessionStore: SessionStore;
 	private sessionItem: SessionItem = new SessionItem();
@@ -15,6 +16,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 	constructor(private readonly _extensionContext: vscode.ExtensionContext) {
 		this._extensionUri = _extensionContext.extensionUri;
 		this.sessionStore = new SessionStore(_extensionContext);
+		this.stopGeneate = false;
 	}
 
 	public resolveWebviewView(webviewView: vscode.WebviewView,
@@ -216,11 +218,16 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 		// 调接口成功 后发送历史记录和当前问题的答案给webview
 		postEventStream(historyPrompt, (data) => {
 			console.log("generateAnswer.streamData:", data);
+			// 停止生成
+			if (this.stopGeneate) {
+				data = 'This operation was aborted';
+			}
 			chatItem.aiMessage.append(data);
 			chatItem.aiMsgId = index.toString();
 			respData.responseText = chatItem.aiMessage.content;
 			respData.aiMsgId = chatItem.aiMsgId;
 			this._view?.webview.postMessage({ type: "addStreamResponse", value: respData });
+			this.stopGeneate = false;
 		}, () => {
 			// 接口返回值为空
 			console.log("generateAnswer.requstsDone:", chatItem.aiMessage.content);
@@ -236,6 +243,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 
 	// 停止生成流
 	private stopGenerationStream() {
+		this.stopGeneate = true;
 		stopEventStream();
 	}
 
@@ -284,6 +292,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 		`;
 	}
 
+	// 查看历史对话
 	private _makeQuestionAnswerDivFromSessionItem(sessionItem: SessionItem) {
 		let html = "";
 		for (let i = 0; i < sessionItem.chatList.length; i++) {
@@ -319,23 +328,6 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 			<div class="row mr-0">
 				<div class="col-4 pr-0">
 					<div class="answer-title">${vscode.l10n.t("Answer :")}</div>
-				</div>
-				<div class="col-8 p-0" style="align-items: center; display: flex; justify-content: flex-end;">
-					<div class="copy-btn copy-btn-icon focus-on-tab inner-btns" title="Retry" style="float: right;" id="refreshBtn${contentIndex}">
-						<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-							<path fill="currentColor" d="M866.133333 85.333333c4.693333 0 8.533333 3.84 8.533334 8.533334v194.133333a32 32 0 0 1-28.928 31.850667L842.666667 320h-194.133334a8.533333 8.533333 0 0 1-8.533333-8.533333v-46.933334c0-4.693333 3.84-8.533333 8.533333-8.533333h120.341334A361.536 361.536 0 0 0 512 149.333333C311.701333 149.333333 149.333333 311.701333 149.333333 512s162.368 362.666667 362.666667 362.666667c185.813333 0 339.008-139.776 360.170667-319.914667 0.384-3.328 0.810667-7.829333 1.28-13.546667a8.533333 8.533333 0 0 1 8.512-7.850666h47.061333a8.533333 8.533333 0 0 1 8.533333 9.109333c-0.426667 5.696-0.789333 10.218667-1.130666 13.589333C914.346667 770.986667 732.778667 938.666667 512 938.666667 276.352 938.666667 85.333333 747.648 85.333333 512S276.352 85.333333 512 85.333333c116.288 0 221.717333 46.506667 298.666667 121.984V93.866667c0-4.693333 3.84-8.533333 8.533333-8.533334h46.933333z" p-id="2282"></path>
-						</svg>
-					</div>
-					<div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Copy" style="float: right;" id="copyBtn${contentIndex}">
-						<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-							<path fill="currentColor" d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z" p-id="5754"></path><path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="5755" fill="currentColor"></path><path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="5756" fill="currentColor"></path><
-						/svg>
-					</div>
-					<div class="copy-btn copybtn-icn-tick" style="float: right; display: none" id="copyCheck${contentIndex}">
-						<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-							<path d="M369.792 704.32L930.304 128 1024 223.616 369.984 896l-20.288-20.864-0.128 0.128L0 516.8 96.128 423.68l273.664 280.64z" fill="#1296db" p-id="4526"></path>
-						</svg>
-					</div>
 				</div>
 			</div>
 			<div class="answer-container">
@@ -468,16 +460,24 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 	
 										</div>
 										<div class="footerContent">
-											<div class="generating-and-stop" id="btn-stop-streaming" style="display: none;">
+											<div class="generating-and-stop" id="generte-stop" style="display: none">
 												<div class="generating-and-stop-inner">
-													<span class="ai-button generating-and-stop-right">
+													<span class="ai-button generating-and-stop-right" id="btn-stop-streaming" style="display: none">
 														<span role="img" class="anticon" style="margin-right: 4px;">
-															<svg t="1718674478273" fill="currentColor" class="icon" viewBox="0 0 1030 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="19862" width="16" height="16">
-																<path d="M512 0C229.26 0 0 229.239 0 512c0 282.783 229.239 512 512 512 282.783 0 512-229.217 512-512 0.021-282.761-229.196-512-512-512z m0 958.843C265.213 958.843 65.178 758.787 65.178 512S265.235 65.178 512 65.178c246.83 0 446.843 200.035 446.843 446.822C958.864 758.787 758.83 958.843 512 958.843z" p-id="19863"></path>
-																<path d="M365.102 328.528h85.705v385.67h-85.705v-385.67zM536.512 328.528h107.13v385.67h-107.13v-385.67z" p-id="19864"></path>
-															</svg>
+														<svg t="1718674478273" fill="currentColor" class="icon" viewBox="0 0 1030 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="19862" width="16" height="16">
+															<path d="M512 0C229.26 0 0 229.239 0 512c0 282.783 229.239 512 512 512 282.783 0 512-229.217 512-512 0.021-282.761-229.196-512-512-512z m0 958.843C265.213 958.843 65.178 758.787 65.178 512S265.235 65.178 512 65.178c246.83 0 446.843 200.035 446.843 446.822C958.864 758.787 758.83 958.843 512 958.843z" p-id="19863"></path>
+															<path d="M365.102 328.528h85.705v385.67h-85.705v-385.67zM536.512 328.528h107.13v385.67h-107.13v-385.67z" p-id="19864"></path>
+														</svg>
 														</span>
 														${vscode.l10n.t("Stop Gen")}
+													</span>
+													<span class="ai-button generating-and-stop-right" id="refreshBtn">
+														<span role="img" class="anticon" style="margin-right: 4px;" id="refresh_svg_content">
+														<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+															<path fill="currentColor" d="M866.133333 85.333333c4.693333 0 8.533333 3.84 8.533334 8.533334v194.133333a32 32 0 0 1-28.928 31.850667L842.666667 320h-194.133334a8.533333 8.533333 0 0 1-8.533333-8.533333v-46.933334c0-4.693333 3.84-8.533333 8.533333-8.533333h120.341334A361.536 361.536 0 0 0 512 149.333333C311.701333 149.333333 149.333333 311.701333 149.333333 512s162.368 362.666667 362.666667 362.666667c185.813333 0 339.008-139.776 360.170667-319.914667 0.384-3.328 0.810667-7.829333 1.28-13.546667a8.533333 8.533333 0 0 1 8.512-7.850666h47.061333a8.533333 8.533333 0 0 1 8.533333 9.109333c-0.426667 5.696-0.789333 10.218667-1.130666 13.589333C914.346667 770.986667 732.778667 938.666667 512 938.666667 276.352 938.666667 85.333333 747.648 85.333333 512S276.352 85.333333 512 85.333333c116.288 0 221.717333 46.506667 298.666667 121.984V93.866667c0-4.693333 3.84-8.533333 8.533333-8.533334h46.933333z" p-id="2282"></path>
+														</svg>
+														</span>
+														${vscode.l10n.t("Retry")}
 													</span>
 												</div>
 											</div>
