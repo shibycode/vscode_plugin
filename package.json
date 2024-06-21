@@ -139,8 +139,24 @@
         "category": "codedcit"
       },
       {
+        "command": "codedcit.open.chat",
+        "title": "%codedcit.open.chat%",
+        "icon": {
+          "dark": "assets/add_dark.svg",
+          "light": "assets/add_light.svg"
+        }
+      },
+      {
+        "command": "codedcit.open.history",
+        "title": "%codedcit.open.history%",
+        "icon": {
+          "dark": "assets/history_dark.svg",
+          "light": "assets/history_light.svg"
+        }
+      },
+      {
         "command": "codedcit.open.settings",
-        "title": "Setting",
+        "title": "%codedcit.open.settings%",
         "icon": {
           "dark": "assets/setting_dark.svg",
           "light": "assets/setting_light.svg"
@@ -209,8 +225,19 @@
       ],
       "view/title": [
         {
+          "command": "codedcit.open.chat",
+          "group": "navigation",
+          "order": 1
+        },
+        {
+          "command": "codedcit.open.history",
+          "group": "navigation",
+          "order": 2
+        },
+        {
           "command": "codedcit.open.settings",
-          "group": "navigation"
+          "group": "navigation",
+          "order": 3
         }
       ]
     },

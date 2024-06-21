@@ -34,6 +34,8 @@ function registerWebviewViewExtension(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("codedcit.generate_unit_test", () => provider.executeCommand("codedcit.generate_unit_test")),
   vscode.commands.registerCommand("codedcit.check_performance", () => provider.executeCommand("codedcit.check_performance")),
   vscode.commands.registerCommand("codedcit.check_security", () => provider.executeCommand("codedcit.check_security")),
+  vscode.commands.registerCommand("codedcit.open.history", () => provider.executeCommand("codedcit.open_history")),
+  vscode.commands.registerCommand("codedcit.open.chat", () => provider.executeCommand("codedcit.open_newchat"))
  );
 }
 

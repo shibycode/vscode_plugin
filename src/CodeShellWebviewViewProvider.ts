@@ -95,6 +95,24 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 
 	// 命令执行入口
 	public async executeCommand(command: string) {
+		if (command === 'codedcit.open_history') {
+			// 保存当前对话
+			this.sessionStore.update(this.sessionItem);
+			this.sessionItem = new SessionItem();
+			// 展示历史会话div
+			this.showSessionHistory();
+			// 展示历史对话
+			this._view?.webview.postMessage({ type: "clickOpenHistory"});
+			return;
+		}
+		// 开启新会话
+		if (command === 'codedcit.open_newchat') {
+			this.sessionStore.update(this.sessionItem);
+			this.sessionItem = new SessionItem();
+			this._view?.webview.postMessage({ type: "startNewChat", value: this._makestartChatDiv() });
+			return;
+		}
+
 		// Get the selected text of the active editor
 		const selection = vscode.window.activeTextEditor?.selection;
 		const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
@@ -228,6 +246,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 			respData.aiMsgId = chatItem.aiMsgId;
 			this._view?.webview.postMessage({ type: "addStreamResponse", value: respData });
 			this.stopGeneate = false;
+			this.sessionStore.update(this.sessionItem);
 		}, () => {
 			// 接口返回值为空
 			console.log("generateAnswer.requstsDone:", chatItem.aiMessage.content);
@@ -256,6 +275,12 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 	private sessionItemDelete(itemId: string) {
 		const sessionItem = this.sessionStore.getSessionItemById(itemId);
 		this.sessionStore.delete(sessionItem);
+		const historyChat = this.sessionStore.getSessionHistory();
+
+		if(historyChat.length <= 0) {
+			// 历史记录删完 跳转到对话页面
+			this._view?.webview.postMessage({ type: "startNewChat", value: this._makestartChatDiv() });
+		}
 		this.showSessionHistory();
 	}
 
@@ -284,7 +309,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 					<p class="session-date-time"> ${sessionTime} </p>
 				</div>
 				<div class="session-options inner-btns ant-dropdown-trigger">
-					<svg t="1718328756099" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7972" width="20" height="20">
+					<svg t="1718328756099" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7972" width="16" height="16">
 						<path fill="currentColor" d="M974.991554 109.146486 647.781177 109.146486c0-2.225921 2.225921-4.451842 2.225921-6.677763 0-55.648023-46.74434-102.392363-102.392363-102.392363l-66.777628 0C422.963163-2.14956 378.444744 44.594779 378.444744 100.242803c0 2.225921 0 4.451842 2.225921 6.677763L49.008446 106.920565c-22.259209 0-40.066577 17.807367-40.066577 40.066577s17.807367 40.066577 40.066577 40.066577l77.907233 0 0 636.613387c0 111.296047 91.262758 200.332884 200.332884 200.332884l389.536163 0c111.296047 0 200.332884-91.262758 200.332884-200.332884L917.11761 189.27964l60.099865 0c22.259209 0 40.066577-17.807367 40.066577-40.066577S997.250763 109.146486 974.991554 109.146486zM458.577898 100.242803c0-11.129605 11.129605-22.259209 22.259209-22.259209l66.777628 0c11.129605 0 22.259209 11.129605 22.259209 22.259209 0 2.225921 0 4.451842 2.225921 6.677763l-113.521968 0C456.351977 106.920565 458.577898 102.468724 458.577898 100.242803zM836.984456 825.893026c0 66.777628-53.422102 120.19973-120.19973 120.19973L327.248563 946.092757c-66.777628 0-120.19973-53.422102-120.19973-120.19973L207.048832 189.27964l629.935624 0L836.984456 825.893026zM411.833558 756.889478c22.259209 0 40.066577-17.807367 40.066577-40.066577l0-311.62893c0-22.259209-17.807367-40.066577-40.066577-40.066577s-40.066577 17.807367-40.066577 40.066577l0 311.62893C371.766981 739.08211 389.574349 756.889478 411.833558 756.889478zM632.19973 756.889478c22.259209 0 40.066577-17.807367 40.066577-40.066577l0-311.62893c0-22.259209-17.807367-40.066577-40.066577-40.066577-22.259209 0-40.066577 17.807367-40.066577 40.066577l0 311.62893C592.133154 739.08211 609.940521 756.889478 632.19973 756.889478z" p-id="7973"></path>
 					</svg>
 				</div>
@@ -354,6 +379,24 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 				</div>
 			</div>
 		</div>
+		`;
+	}
+
+	private _makestartChatDiv() {
+		return `
+			<div id="start-chat" style="display: block">
+				<center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center>
+				<h3 style="color: lightblue;font-size: larger">嗨，我是你的智能编码助手。请问有什么可以帮助您？</h3>
+				</center><center><p>&nbsp;</p></center>
+				<p>&nbsp;&nbsp;•&nbsp;选中代码后右击触发快捷命令。</p>
+				<p>&nbsp;&nbsp;•&nbsp;点击上方图标，体验实用小功能。</p>
+				<p>&nbsp;&nbsp;•&nbsp;例如点击上方【聊天图标➕】，即可开始与AI代码助手聊天。</p>
+				</center><center><p>&nbsp;</p></center>
+				<p>&nbsp;&nbsp;•&nbsp;打开您正在编写的代码文件，输入任意代码即可使用自动补全功能。</p>
+				<p>&nbsp;&nbsp;•&nbsp;按下 tab 接受所有补全建议。</p>
+				<div><p>&nbsp;&nbsp;•&nbsp;按下 Ctrl+➡️ 接受一个单词的补全建议。</p></div>
+				<center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center>
+			</div>
 		`;
 	}
 
@@ -434,30 +477,22 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 										</div>
 									</div>
 									<div id="main-div-aichat" class="main-ai-chat-div">
-										<div class="history-btn-section row">
-											<div class="col-6 d-flex justify-content-start">
-												<div tabindex="0" aria-label="history" id="historyButton" class="history-btn focus-on-tab">
-													<svg t="1718328035892" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3346" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
-														<path d="M469.333333 298.666667 469.333333 516.693333 670.293333 635.733333 704 581.12 533.333333 480 533.333333 298.666667M533.333333 85.333333C382.72 85.333333 252.16 167.253333 182.186667 288.853333L85.333333 192 85.333333 469.333333 362.666667 469.333333 245.333333 352C296.96 244.48 405.333333 170.666667 533.333333 170.666667 709.973333 170.666667 853.333333 314.026667 853.333333 490.666667 853.333333 667.306667 709.973333 810.666667 533.333333 810.666667 393.813333 810.666667 276.053333 721.493333 232.106667 597.333333L142.506667 597.333333C189.44 769.28 346.026667 896 533.333333 896 756.906667 896 938.666667 714.666667 938.666667 490.666667 938.666667 266.666667 757.333333 85.333333 533.333333 85.333333Z" p-id="3347" fill="#7a8084"></path>
-													</svg>
-													<span class="ml-2 history-buttons">${vscode.l10n.t("History")}</span>
-												</div>
-											</div>
-											<div class="col-6 d-flex justify-content-end">
-												<div tabindex="0" class="focus-on-tab">
-													<span class="d-flex add-session-icon">
-														<div class="add-session-btn" id="add_session_btn">
-															<span class="plus-icon">+</span>
-														</div>
-													</span>
-												</div>
-											</div>
-										</div>
 										<div id="chatContainerQuestionListId" tabindex="0"
 											class="no-shift-needed-tzs chat-container tzs-list-questions questions-asked-2"
 											infinite-scroll style="height: calc(98vh - 190px) !important">
-											
-	
+											<div id="start-chat" style="display: block">
+												<center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center>
+												<h3 style="color: lightblue;font-size: larger">嗨，我是你的智能编码助手。请问有什么可以帮助您？</h3>
+												</center><center><p>&nbsp;</p></center>
+												<p>&nbsp;&nbsp;•&nbsp;选中代码后右击触发快捷命令。</p>
+												<p>&nbsp;&nbsp;•&nbsp;点击上方图标，体验实用小功能。</p>
+												<p>&nbsp;&nbsp;•&nbsp;例如点击上方【聊天图标➕】，即可开始与AI代码助手聊天。</p>
+												</center><center><p>&nbsp;</p></center>
+												<p>&nbsp;&nbsp;•&nbsp;打开您正在编写的代码文件，输入任意代码即可使用自动补全功能。</p>
+												<p>&nbsp;&nbsp;•&nbsp;按下 tab 接受所有补全建议。</p>
+												<div><p>&nbsp;&nbsp;•&nbsp;按下 Ctrl+➡️ 接受一个单词的补全建议。</p></div>
+												<center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center>
+											</div>
 										</div>
 										<div class="footerContent">
 											<div class="generating-and-stop" id="generte-stop" style="display: none">

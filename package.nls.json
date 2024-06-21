@@ -12,6 +12,9 @@
     "codedcit.auto.completion": "Whether or not to automatically trigger completion when typing.",
     "codedcit.delay.time": "The delay in seconds before automatic code completion triggers.",
     "codedcit.completion.max.tokens": "Maximum number of tokens for which suggestions will be displayed",
-    "codedcit.chat.max.tokens": "Maximum number of tokens for which chat messages will be displayed"
+    "codedcit.chat.max.tokens": "Maximum number of tokens for which chat messages will be displayed",
+    "codedcit.open.chat": "Open a new session",
+    "codedcit.open.history": "Historical Dialogue",
+    "codedcit.open.settings": "Settings"
 
 }

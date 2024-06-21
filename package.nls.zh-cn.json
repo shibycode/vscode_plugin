@@ -12,6 +12,9 @@
     "codedcit.auto.completion": "是否在输入时自动触发补全。",
     "codedcit.delay.time": "自动补全触发延时(秒)",
     "codedcit.completion.max.tokens": "自动补全最大令牌数",
-    "codedcit.chat.max.tokens": "自动补全最大令牌数"
+    "codedcit.chat.max.tokens": "自动补全最大令牌数",
+    "codedcit.open.chat": "开启新会话",
+    "codedcit.open.history": "历史对话",
+    "codedcit.open.settings": "设置"
 
 }

@@ -39,6 +39,14 @@
         historyQuestionAnswerDone(message.value);
         break;
       }
+      case "clickOpenHistory": {
+        openHistory();
+        break;
+      }
+      case "startNewChat": {
+        startNewChat(message.value);
+        break;
+      }
     }
   });
 
@@ -50,9 +58,16 @@
 
 // 开始提问
   function addQuestionAnswerDiv(eventData) {
+
+    // 展示停止回答按钮
     document.getElementById("generte-stop").style.display = "flex";
     document.getElementById("btn-stop-streaming").style.display = "flex";
     document.getElementById("refreshBtn").style.display = "none";
+
+    // 隐藏欢迎页面的提示信息
+    if (document.getElementById("start-chat")) {
+      document.getElementById("start-chat").style.display = "none";
+    }
     let chatContainer = document.getElementById("chatContainerQuestionListId");
 
     div = document.createElement("div")
@@ -246,6 +261,8 @@
       itemDiv.addEventListener("click", e => {
         vscode.postMessage({ type: "sessionItemClicked", value: sessionDiv.id });
       });
+
+      // 历史对话删除按钮
       let deleteDiv = sessionDiv.querySelector("div.session-options");
       deleteDiv.addEventListener("click", e => {
         vscode.postMessage({ type: "sessionItemDelete", value: sessionDiv.id });
@@ -279,8 +296,10 @@
     hljs.highlightAll();
 
     const textarea = document.getElementById("questioninput");
-    textarea.value = "";
-    textarea.style.height = 'auto';
+    if (textarea) {
+      textarea.value = "";
+      textarea.style.height = 'auto';
+    }
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }
 
@@ -291,44 +310,29 @@
     }
     editBtn.clickHandler = (e) => {
       const textarea = document.getElementById("questioninput");
-      textarea.value = question;
-      textarea.style.height = `${textarea.scrollHeight}px`;
+      if (textarea) {
+        textarea.value = question;
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
     }
     editBtn.addEventListener("click", editBtn.clickHandler);
   }
-
-  function answerCopyBtn(index, answer) {
-    let copyBtn = document.getElementById(`copyBtn${index}`);
-    if (copyBtn.clickHandler) {
-      copyBtn.removeEventListener("click", copyBtn.clickHandler);
-    }
-    copyBtn.clickHandler = (e) => {
-      navigator.clipboard.writeText(answer);
-      let copyCheck = document.getElementById(`copyCheck${index}`);
-      copyCheck.style.display = "block";
-      copyBtn.style.display = "none";
-      setTimeout(() => {
-        copyCheck.style.display = "none";
-        copyBtn.style.display = "block";
-      }, 2000)
-    }
-    copyBtn.addEventListener("click", copyBtn.clickHandler);
-  }
-
   // 重新回答
   function answerRefreshBtn(index) {
     let refreshBtn = document.getElementById('refreshBtn');
-    if (refreshBtn.clickHandler) {
-      refreshBtn.removeEventListener("click", refreshBtn.clickHandler);
+    if (refreshBtn) {
+      if (refreshBtn.clickHandler) {
+        refreshBtn.removeEventListener("click", refreshBtn.clickHandler);
+      }
+      refreshBtn.clickHandler = (e) => {
+        refreshBtn.style.display = "none";
+        document.getElementById("btn-stop-streaming").style.display = "flex";
+        // loading
+        document.getElementById(`outputDiv${index}`).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="18" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="6" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin="0" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>`;
+        vscode.postMessage({ type: "regenerateThisAnswer", value: index });
+      }
+      refreshBtn.addEventListener("click", refreshBtn.clickHandler);
     }
-    refreshBtn.clickHandler = (e) => {
-      refreshBtn.style.display = "none";
-      document.getElementById("btn-stop-streaming").style.display = "flex";
-      // loading
-      document.getElementById(`outputDiv${index}`).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="18" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="6" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin="0" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>`;
-      vscode.postMessage({ type: "regenerateThisAnswer", value: index });
-    }
-    refreshBtn.addEventListener("click", refreshBtn.clickHandler);
   }
 
   function showChat_hideHistory() {
@@ -342,7 +346,7 @@
   // 展示历史对话List
   function hideChat_showHistory() {
     // 隐藏对话框前 保存当前对话框内容
-    vscode.postMessage({ type: "startNewSession" });
+    // vscode.postMessage({ type: "startNewSession" });
     let chatDiv = document.getElementById("main-div-aichat");
     chatDiv.style.display = "none";
 
@@ -400,17 +404,27 @@ document.getElementById("questioninput").addEventListener("input", event => {
     }
   });
 
+  // 打开历史会话
+  function openHistory() {
+    hideChat_showHistory();
+  }
+
   // 开启新对话
-  document.getElementById("add_session_btn").addEventListener("click", event => {
-    vscode.postMessage({ type: "startNewSession" });
+  function startNewChat(eventData) {
     let element = document.getElementById("chatContainerQuestionListId");
     element.innerHTML = null;
-  });
 
-  document.getElementById("historyButton").addEventListener("click", event => {
-    vscode.postMessage({ type: "showSessionHistory" });
-    hideChat_showHistory();
-  });
+    div = document.createElement("div")
+    div.innerHTML = eventData
+    element.appendChild(div);
+
+    // 隐藏重新回答按钮
+    if (document.getElementById("refreshBtn")) {
+      document.getElementById("refreshBtn").style.display = "none";
+    }
+    // 隐藏历史会话
+    showChat_hideHistory();
+  }
 
   document.getElementById("historyBackButton").addEventListener("click", event => {
     showChat_hideHistory();
