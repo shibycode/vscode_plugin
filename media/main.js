@@ -81,8 +81,8 @@
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
     questionEditBtn(eventData.contentIndex, eventData.question);
-    addExpandButtons(i);
-    codeExpandButtonsEvent(i);
+    addExpandButtons(eventData.contentIndex);
+    codeExpandButtonsEvent(eventData.contentIndex);
     showChat_hideHistory();
   }
 

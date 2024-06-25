@@ -1,8 +1,8 @@
 // The module "vscode" contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { CodeShellCompletionProvider } from "./CodeShellCompletionProvider";
-import { CodeShellWebviewViewProvider } from "./CodeShellWebviewViewProvider";
+import { CodeCompletionProvider } from "./CodeCompletionProvider";
+import { CodeWebviewViewProvider } from "./CodeWebviewViewProvider";
 import { CODESHELL_CONFIG } from "./consts";
 
 // This method is called when your extension is activated
@@ -19,11 +19,11 @@ export function deactivate() { }
 
 // 在扩展中注册 Webview 视图扩展
 function registerWebviewViewExtension(context: vscode.ExtensionContext) {
- const provider = new CodeShellWebviewViewProvider(context);
+ const provider = new CodeWebviewViewProvider(context);
 
  // 使用扩展的上下文注册提供程序
  context.subscriptions.push(
-  vscode.window.registerWebviewViewProvider(CodeShellWebviewViewProvider.viewId, provider, {
+  vscode.window.registerWebviewViewProvider(CodeWebviewViewProvider.viewId, provider, {
    webviewOptions: { retainContextWhenHidden: true }
   }),
   // 注册命令以执行相关的操作
@@ -35,7 +35,8 @@ function registerWebviewViewExtension(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("codedcit.check_performance", () => provider.executeCommand("codedcit.check_performance")),
   vscode.commands.registerCommand("codedcit.check_security", () => provider.executeCommand("codedcit.check_security")),
   vscode.commands.registerCommand("codedcit.open.history", () => provider.executeCommand("codedcit.open_history")),
-  vscode.commands.registerCommand("codedcit.open.chat", () => provider.executeCommand("codedcit.open_newchat"))
+  vscode.commands.registerCommand("codedcit.open.chat", () => provider.executeCommand("codedcit.open_newchat")),
+  vscode.commands.registerCommand("codedcit.code_generation", () => provider.executeCommand("codedcit.code_generation"))
  );
 }
 
@@ -59,7 +60,7 @@ function registerCompleteionExtension(context: vscode.ExtensionContext) {
  // 订阅相关内容
  context.subscriptions.push(
   vscode.languages.registerInlineCompletionItemProvider(
-   { pattern: "**" }, new CodeShellCompletionProvider(statusBar)  // 注册内联提示提供程序
+   { pattern: "**" }, new CodeCompletionProvider(statusBar)  // 注册内联提示提供程序
   ),
 
   vscode.commands.registerCommand("codedcit.auto_completion_enable", completionStatusCallback(true)),  // 注册命令 - 启用自动完成

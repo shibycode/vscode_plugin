@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { END_OF_TEXT, MAX_TOKENS_COMPLETION, MODEL_ENV, STOP_WORDS } from "../consts";
 import { RequestData, axiosInstance } from "./commons";
+import * as prompt from "../CreatePrompt";
 
 function getRequestDataCPU(fimPrefixCode: string, fimSuffixCode: string): RequestData {
-    const prompt = `fimPrefixCode=${fimPrefixCode},fimSuffixCode=${fimSuffixCode}.已知前缀代码fimPrefixCode和后缀代码fimSuffixCode,请补全并返回中间部分`;
+    const humanPrompt  = prompt.createPromptCodeCompletion(fimPrefixCode, fimSuffixCode);
     return {
         uri: "http://10.0.5.118:9002/streamingInterface/promptEngineTemplate/testStream",
         body: {
@@ -14,11 +15,11 @@ function getRequestDataCPU(fimPrefixCode: string, fimSuffixCode: string): Reques
             "talk": [
                 {
                     "role": "user",
-                    "text": prompt
+                    "text": humanPrompt
                 }
             ],
             "ref": MODEL_ENV,
-            "query": prompt,
+            "query": humanPrompt,
             "role": "user",
             "modelParams": {
                 "temperature": 0.7,

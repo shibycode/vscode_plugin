@@ -29,3 +29,11 @@ export function createPromptCheckSecurity(language: string, functionCode: string
 export function createPromptAskingQuestion(language: string, functionCode: string, inputText: string,): string {
 	return `${inputText}\n\`\`\`${language}\n${functionCode}\n\`\`\`\n`;
 }
+
+export function createPromptCodeCompletion (fimPrefixCode: string, fimSuffixCode: string,): string {
+	return `fimPrefixCode=${fimPrefixCode},\n\`\`\`fimSuffixCode=${fimSuffixCode}\n\`\`\`你是一个资深前端开发工程师，已知前缀代码fimPrefixCode和后缀代码fimSuffixCode,请分析前缀和后缀代码，生成代码，不要返回其他内容`;
+}
+
+export function createPromptGenerationCode(language: string, functionCode: string): string {
+	return `${l10n.t("Check the following {0} code for any security issues, and please provide optimization suggestions", language)}\n\`\`\`${language}\n${functionCode}\n\`\`\`\n`;
+}

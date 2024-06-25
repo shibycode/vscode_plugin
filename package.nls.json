@@ -1,6 +1,7 @@
 {
     "codedcit.auto_completion_enable.title": "Enable Auto Completion",
     "codedcit.auto_completion_disable.title": "Disable Auto Completion",
+    "codedcit.codedcit.code_generation.title": "Code Generation",
     "codedcit.explain_this_code.title": "Explain Selected Codes",
     "codedcit.improve_this_code.title": "Optimize Selected Codes",
     "codedcit.clean_this_code.title": "Clean Selected Codes",
