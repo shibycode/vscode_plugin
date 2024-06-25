@@ -81,6 +81,8 @@
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
     questionEditBtn(eventData.contentIndex, eventData.question);
+    addExpandButtons(i);
+    codeExpandButtonsEvent(i);
     showChat_hideHistory();
   }
 
@@ -173,6 +175,65 @@
     }
   }
 
+  // 提问的代码块增加 折叠收起按钮
+  function addExpandButtons(outputIndex) {
+    const outputDiv = document.getElementById(`questionDiv${outputIndex}`);
+    const preBlocks = outputDiv.querySelectorAll("pre");
+    for (let i = 0; i < preBlocks.length; i++) {
+      const preBlock = preBlocks[i];
+      const blockIndex = `${outputIndex}_${i}`;
+      preBlock.id = `question_pre_${blockIndex}`
+      // 高度超过200px  添加展开折叠按钮
+      if (preBlock.clientHeight > 200) {
+        div = document.createElement("div")
+        div.classList.add("p0", "operations")
+        div.innerHTML = `<div class="copy-btn copy-btn-icon inner-btns" style="float: right;"> 
+        <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Compress" style="display: flex;" id="compressBtn_${blockIndex}">
+          <svg t="1719294896326" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="40477" data-spm-anchor-id="a313x.search_index.0.i10.76a23a81PYlpN3" width="16" height="16">
+            <path d="M341.333333 810.666667h128v128h85.333334v-128h128l-170.666667-170.666667-170.666667 170.666667z m341.333334-640h-128V42.666667h-85.333334v128H341.333333l170.666667 170.666666 170.666667-170.666666zM170.666667 384v85.333333h682.666666V384H170.666667zM170.666667 512h682.666666v85.333333H170.666667z" p-id="40478" fill="#ffffff"></path>
+          </svg>
+        </div>
+        <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Expand" style="display: none;" id="expandBtn_${blockIndex}">
+          <svg t="1719294391373" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="36814" width="16" height="16">
+            <path d="M256 85.333333h512v85.333334H256V85.333333z m467.2 317.866667L512 192 300.928 403.072l60.330667 60.373333L469.333333 355.328v313.301333l-108.16-108.16-60.330666 60.330667L512 832l211.2-211.2-60.330667-60.330667L554.666667 668.672V355.328l108.202666 108.202667L723.2 403.2zM768 853.333333v85.333334H256v-85.333334h512z" p-id="36815" fill="#ffffff"></path>
+          </svg>
+        </div>
+        </div>`
+        preBlock.prepend(div);
+      }
+    }
+  }
+
+  //代码块的折叠收起按钮添加处理事件
+  function codeExpandButtonsEvent(outputIndex) {
+    const outputDiv = document.getElementById(`questionDiv${outputIndex}`);
+    const preBlocks = outputDiv.querySelectorAll("pre");
+    for (let i = 0; i < preBlocks.length; i++) {
+      let preBlock = preBlocks[i];
+      let blockIndex = `${outputIndex}_${i}`;
+
+      // 高度超过200px  添加展开折叠按钮
+      if (preBlock.clientHeight > 200) {
+        let expandBtn = document.getElementById(`expandBtn_${blockIndex}`);
+        expandBtn.addEventListener("click", (e) => {
+          let compressBtn = document.getElementById(`compressBtn_${blockIndex}`);
+          compressBtn.style.display = "flex";
+          expandBtn.style.display = "none";
+          // 展开代码
+          preBlock.classList.remove("maskDiv");
+        });
+
+        let compressBtn = document.getElementById(`compressBtn_${blockIndex}`);
+        compressBtn.addEventListener("click", (e) => {
+          let expandBtn = document.getElementById(`expandBtn_${blockIndex}`);
+          compressBtn.style.display = "none";
+          expandBtn.style.display = "flex";
+          preBlock.classList.add("maskDiv");
+        });
+      }
+    }
+  }
+
   // 回复的代码块添加复制 插入 保存到文件 按钮
   function addCodeBlockButtons(outputIndex) {
     const outputDiv = document.getElementById(`outputDiv${outputIndex}`);
@@ -204,8 +265,24 @@
         <svg t="1718678489393" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6043" width="16" height="16">
           <path fill="#FFFFFF"  d="M859.989333 768H704v-155.989333a35.968 35.968 0 1 0-72.021333 0V768h-147.968a35.968 35.968 0 1 0 0 72.021333h148.010666v147.968a35.968 35.968 0 1 0 71.978667 0v-147.968h155.989333a35.968 35.968 0 1 0 0-72.021333z m15.104-466.218667L597.12 21.333333a77.44 77.44 0 0 0-14.805333-11.52 60.928 60.928 0 0 0-4.394667-2.261333c-0.938667-0.512-1.92-0.896-2.816-1.28A72.362667 72.362667 0 0 0 546.005333 0h-346.026666C160.256 0 128 32.213333 128 72.021333v880C128 991.744 160.213333 1024 200.021333 1024h211.968a35.968 35.968 0 1 0 0-72.021333H199.978667V72.021333H512v240C512 351.786667 544.213333 384 584.021333 384h239.957334v155.989333a35.968 35.968 0 1 0 72.021333 0V352.512c0-19.029333-7.509333-37.205333-20.906667-50.730667z m-291.114666 10.24V110.421333l199.808 201.557334h-199.808z" p-id="6044"></path>
         </svg>
-      </div>
       </div>`
+
+      if (preBlock.clientHeight > 200) {
+        div.innerHTML += `
+          <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Compress" style="display:  ;" id="compress_output_Btn_${blockIndex}">
+          <svg t="1719294896326" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="40477" data-spm-anchor-id="a313x.search_index.0.i10.76a23a81PYlpN3" width="16" height="16">
+            <path d="M341.333333 810.666667h128v128h85.333334v-128h128l-170.666667-170.666667-170.666667 170.666667z m341.333334-640h-128V42.666667h-85.333334v128H341.333333l170.666667 170.666666 170.666667-170.666666zM170.666667 384v85.333333h682.666666V384H170.666667zM170.666667 512h682.666666v85.333333H170.666667z" p-id="40478" fill="#ffffff"></path>
+          </svg>
+        </div>
+        <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Expand" style="display: none;" id="expand_output_Btn_${blockIndex}">
+          <svg t="1719294391373" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="36814" width="16" height="16">
+            <path d="M256 85.333333h512v85.333334H256V85.333333z m467.2 317.866667L512 192 300.928 403.072l60.330667 60.373333L469.333333 355.328v313.301333l-108.16-108.16-60.330666 60.330667L512 832l211.2-211.2-60.330667-60.330667L554.666667 668.672V355.328l108.202666 108.202667L723.2 403.2zM768 853.333333v85.333334H256v-85.333334h512z" p-id="36815" fill="#ffffff"></path>
+          </svg>
+        </div>
+        </div>`
+      } else {
+        div.innerHTML += `</div>`
+      }
       preBlock.prepend(div);
     }
   }
@@ -248,6 +325,26 @@
         navigator.clipboard.writeText(preBlock.innerText);
         vscode.postMessage({ type: "addFileCode", value: preBlock.innerText });
       });
+
+      // 高度超过200px  添加展开折叠按钮
+      if (preBlock.clientHeight > 200) {
+        let expandBtn = document.getElementById(`expand_output_Btn_${blockIndex}`);
+        expandBtn.addEventListener("click", (e) => {
+          let compressBtn = document.getElementById(`compress_output_Btn_${blockIndex}`);
+          compressBtn.style.display = "flex";
+          expandBtn.style.display = "none";
+          // 展开代码
+          preBlock.classList.remove("maskDiv");
+        });
+
+        let compressBtn = document.getElementById(`compress_output_Btn_${blockIndex}`);
+        compressBtn.addEventListener("click", (e) => {
+          let expandBtn = document.getElementById(`expand_output_Btn_${blockIndex}`);
+          compressBtn.style.display = "none";
+          expandBtn.style.display = "flex";
+          preBlock.classList.add("maskDiv");
+        });
+      }
     }
   }
 
@@ -292,6 +389,9 @@
       answerRefreshBtn(i);
       addCodeBlockButtons(i);
       codeBlockButtonEvent(i);
+
+      addExpandButtons(i);
+      codeExpandButtonsEvent(i);
     }
     hljs.highlightAll();
 

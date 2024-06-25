@@ -436,6 +436,23 @@ a.send-disabled {
     color: #fff
 }
 
+.maskDiv {
+    overflow: hidden;
+    --mask-height: 50px;
+    max-height: 200px;
+    margin-bottom: 1rem;
+    --mask-image-content: linear-gradient(to bottom, black, black calc(100% - var(--mask-height)), transparent);
+    --mask-size-content: 100% 100%;
+    -webkit-mask-image: var(--mask-image-content);
+    -webkit-mask-size: var(--mask-size-content);
+    -webkit-mask-position: 0 0, 100% 0;
+    -webkit-mask-repeat: no-repeat, no-repeat;
+    mask-image: var(--mask-image-content);
+    mask-size: var(--mask-size-content);
+    mask-position: 0 0, 100% 0;
+    mask-repeat: no-repeat, no-repeat;
+}
+
 .loading1-spinner {
     background-color: #00000085;
     position: absolute;

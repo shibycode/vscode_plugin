@@ -330,6 +330,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 		this._view?.webview.postMessage({ type: "historyQuestionAnswerDone", value: eventData });
 	}
 
+	// 问答对话框
 	private _makeQuestionAnswerDiv(contentIndex: number) {
 		return `
 		<div id="qa_section_div_${contentIndex}"
@@ -382,6 +383,7 @@ export class CodeShellWebviewViewProvider implements vscode.WebviewViewProvider 
 		`;
 	}
 
+	// 开始对话 欢迎页面html
 	private _makestartChatDiv() {
 		return `
 			<div id="start-chat" style="display: block">
