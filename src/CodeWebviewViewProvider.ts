@@ -113,6 +113,17 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 			return;
 		}
 
+		// 通过快捷键打开插件
+		if (command === 'codedcit.open.plugin') {
+			if (!this._view) {
+				await vscode.commands.executeCommand("codedcit.chatView.focus");
+				await sleep(1000);
+			} else {
+				this._view?.show?.(true);
+			}
+			return;
+		}
+
 		// Get the selected text of the active editor
 		const selection = vscode.window.activeTextEditor?.selection;
 		const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
@@ -170,7 +181,9 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 		} else {
 			this._view?.show?.(true);
 		}
-		this.startQuestion(humanPrompt);
+		if (humanPrompt) {
+			this.startQuestion(humanPrompt);
+		}
 	}
 	private async saveCodeToFile(fileData: string) {
 		// 文件保存路径 优先存到与当前编辑文件同级的目录下
@@ -395,6 +408,7 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 				<center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center>
 				<h3 style="color: lightblue;font-size: larger">嗨，我是你的智能编码助手。请问有什么可以帮助您？</h3>
 				</center><center><p>&nbsp;</p></center>
+				<p>&nbsp;&nbsp;•&nbsp;快捷键Ctrl + D 可以随时召唤我。</p>
 				<p>&nbsp;&nbsp;•&nbsp;选中代码后右击触发快捷命令。</p>
 				<p>&nbsp;&nbsp;•&nbsp;点击上方图标，体验实用小功能。</p>
 				<p>&nbsp;&nbsp;•&nbsp;例如点击上方【聊天图标➕】，即可开始与AI代码助手聊天。</p>
@@ -491,6 +505,7 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 												<center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center>
 												<h3 style="color: lightblue;font-size: larger">嗨，我是你的智能编码助手。请问有什么可以帮助您？</h3>
 												</center><center><p>&nbsp;</p></center>
+												<p>&nbsp;&nbsp;•&nbsp;快捷键Ctrl + D 可以随时召唤我。</p>
 												<p>&nbsp;&nbsp;•&nbsp;选中代码后右击触发快捷命令。</p>
 												<p>&nbsp;&nbsp;•&nbsp;点击上方图标，体验实用小功能。</p>
 												<p>&nbsp;&nbsp;•&nbsp;例如点击上方【聊天图标➕】，即可开始与AI代码助手聊天。</p>

@@ -2,6 +2,7 @@
     "codedcit.auto_completion_enable.title": "启用 自动触发补全",
     "codedcit.auto_completion_disable.title": "停用 自动触发补全",
     "codedcit.codedcit.code_generation.title": "代码生成",
+    "codedcit.open.chat.title": "打开codeDcits",
     "codedcit.explain_this_code.title": "解释 这段代码",
     "codedcit.improve_this_code.title": "优化 这段代码",
     "codedcit.clean_this_code.title": "清理 这段代码", 

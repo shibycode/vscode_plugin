@@ -86,10 +86,9 @@
     },
     "keybindings": [
       {
-        "key": "alt+\\",
-        "mac": "alt+\\",
-        "command": "editor.action.inlineSuggest.trigger",
-        "when": "editorTextFocus"
+        "command": "codedcit.open.plugin",
+        "key": "ctrl+d",
+        "mac": "cmd+d"
       }
     ],
     "commands": [
@@ -105,6 +104,11 @@
       },
       {
         "command": "codedcit.code_generation",
+        "title": "%codedcit.codedcit.code_generation.title%",
+        "category": "codedcit"
+      },
+      {
+        "command": "codedcit.open.plugin",
         "title": "%codedcit.codedcit.code_generation.title%",
         "category": "codedcit"
       },
