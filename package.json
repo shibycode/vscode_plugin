@@ -230,16 +230,6 @@
           "command": "codedcit.generate_unit_test",
           "group": "group3@2",
           "when": "editorHasSelection"
-        },
-        {
-          "command": "codedcit.check_performance",
-          "group": "group4@1",
-          "when": "editorHasSelection"
-        },
-        {
-          "command": "codedcit.check_security",
-          "group": "group4@2",
-          "when": "editorHasSelection"
         }
       ],
       "view/title": [

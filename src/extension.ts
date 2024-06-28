@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: shiby
  * @Date: 2024-06-26 14:05:05
- * @LastEditTime: 2024-06-28 11:09:36
+ * @LastEditTime: 2024-06-28 15:26:34
  * @LastEditors: shiby
  * @Reference: 
  */
@@ -40,15 +40,14 @@ function registerWebviewViewExtension(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("codedcit.clean_this_code", () => provider.executeCommand("codedcit.clean_this_code")),
   vscode.commands.registerCommand("codedcit.generate_comment", () => provider.executeCommand("codedcit.generate_comment")),
   vscode.commands.registerCommand("codedcit.generate_unit_test", () => provider.executeCommand("codedcit.generate_unit_test")),
-  vscode.commands.registerCommand("codedcit.check_performance", () => provider.executeCommand("codedcit.check_performance")),
-  vscode.commands.registerCommand("codedcit.check_security", () => provider.executeCommand("codedcit.check_security")),
+  // vscode.commands.registerCommand("codedcit.check_performance", () => provider.executeCommand("codedcit.check_performance")),
+  // vscode.commands.registerCommand("codedcit.check_security", () => provider.executeCommand("codedcit.check_security")),
   vscode.commands.registerCommand("codedcit.open.history", () => provider.executeCommand("codedcit.open_history")),
   vscode.commands.registerCommand("codedcit.open.chat", () => provider.executeCommand("codedcit.open_newchat")),
   vscode.commands.registerCommand("codedcit.code_generation", () => provider.executeCommand("codedcit.code_generation")),
   vscode.commands.registerCommand("codedcit.open.plugin", () => provider.executeCommand("codedcit.open.plugin")),
  );
 }
-
 // 注册自动提示扩展函数
 function registerCompleteionExtension(context: vscode.ExtensionContext) {
  // 创建状态栏项
