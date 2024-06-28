@@ -27,10 +27,10 @@
         addStreamResponse(message.value)
         break
       }
-      // case 'responseStreamDone': {
-      //   responseStreamDone(message.value)
-      //   break
-      // }
+      case 'responseStreamDone': {
+        responseStreamDone(message.value)
+        break
+      }
       case 'historySessionDone': {
         historySessionDone(message.value)
         break
@@ -116,30 +116,26 @@
     if (!testNextDiv) {
       chatContainer.scrollTop = chatContainer.scrollHeight
     }
-    // 停止生成按钮
-    document.getElementById('btn-stop-streaming').style.display = 'none'
-    document.getElementById('refreshBtn').style.display = 'flex'
   }
 
-  // ai回复为空 || 接口请求失败
+  // ai回复完成 或 ai回复为空
   function responseStreamDone(eventData) {
-    console.log('ai回复', eventData)
     const contentIndex = eventData.contentIndex
     const responseText = eventData.responseText
+    
+    //  ai回复为空 给定默认回复
+    if (!responseText) {
+      // 给定默认回复
+      const html = showdownConverter.makeHtml('出问题了，请重试')
+      const outputDiv = document.getElementById(`outputDiv${contentIndex}`)
+      outputDiv.innerHTML = null
+      outputDiv.innerHTML = fixCodeClasses(html)
 
-    // 给定默认回复
-    const html = showdownConverter.makeHtml('出问题了，请重试')
-    const outputDiv = document.getElementById(`outputDiv${contentIndex}`)
-    outputDiv.innerHTML = null
-    outputDiv.innerHTML = fixCodeClasses(html)
+      // 更新 重新回答按钮
+      answerRefreshBtn(contentIndex)
+    }
 
-    // answerCopyBtn(contentIndex, responseText);
-    answerRefreshBtn(contentIndex)
-    codeBlockButtonEvent(contentIndex)
-    handleFeedbackBtns(eventData)
-
-    hljs.highlightAll()
-    // 停止生成按钮 暂时不用
+    // 停止生成按钮
     document.getElementById('btn-stop-streaming').style.display = 'none'
     document.getElementById('refreshBtn').style.display = 'flex'
   }
@@ -358,27 +354,31 @@
         let expandBtn = document.getElementById(
           `expand_output_Btn_${blockIndex}`
         )
-        expandBtn.addEventListener('click', (e) => {
-          let compressBtn = document.getElementById(
-            `compress_output_Btn_${blockIndex}`
-          )
-          compressBtn.style.display = 'flex'
-          expandBtn.style.display = 'none'
-          // 展开代码
-          preBlock.classList.remove('maskDiv')
-        })
+        if (expandBtn) {
+          expandBtn.addEventListener('click', (e) => {
+            let compressBtn = document.getElementById(
+              `compress_output_Btn_${blockIndex}`
+            )
+            compressBtn.style.display = 'flex'
+            expandBtn.style.display = 'none'
+            // 展开代码
+            preBlock.classList.remove('maskDiv')
+          })
+        }
 
         let compressBtn = document.getElementById(
           `compress_output_Btn_${blockIndex}`
         )
-        compressBtn.addEventListener('click', (e) => {
-          let expandBtn = document.getElementById(
-            `expand_output_Btn_${blockIndex}`
-          )
-          compressBtn.style.display = 'none'
-          expandBtn.style.display = 'flex'
-          preBlock.classList.add('maskDiv')
-        })
+        if (compressBtn) {
+          compressBtn.addEventListener('click', (e) => {
+            let expandBtn = document.getElementById(
+              `expand_output_Btn_${blockIndex}`
+            )
+            compressBtn.style.display = 'none'
+            expandBtn.style.display = 'flex'
+            preBlock.classList.add('maskDiv')
+          })
+        }
       }
     }
   }

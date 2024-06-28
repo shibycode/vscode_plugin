@@ -9,7 +9,6 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewId = "codedcit.chatView";
 	private _view?: vscode.WebviewView;
 	private _extensionUri: vscode.Uri;
-	private stopGeneate: boolean;
 
 	private sessionStore: SessionStore;
 	private sessionItem: SessionItem = new SessionItem();
@@ -17,7 +16,6 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 	constructor(private readonly _extensionContext: vscode.ExtensionContext) {
 		this._extensionUri = _extensionContext.extensionUri;
 		this.sessionStore = new SessionStore(_extensionContext);
-		this.stopGeneate = false;
 	}
 
 	public resolveWebviewView(webviewView: vscode.WebviewView,
@@ -267,23 +265,17 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 		// 调接口成功 后发送历史记录和当前问题的答案给webview
 		postEventStream(historyPrompt, (data) => {
 			console.log("generateAnswer.streamData:", data);
-			// 停止生成
-			if (this.stopGeneate) {
-				data = 'This operation was aborted';
-			}
 			chatItem.aiMessage.append(data);
 			chatItem.aiMsgId = index.toString();
 			respData.responseText = chatItem.aiMessage.content;
 			respData.aiMsgId = chatItem.aiMsgId;
 			this._view?.webview.postMessage({ type: "addStreamResponse", value: respData });
-			this.stopGeneate = false;
 			this.sessionStore.update(this.sessionItem);
 		}, () => {
-			// 接口返回值为空
+			// 流式输出完毕 或 ai回复为空
 			console.log("generateAnswer.requstsDone:", chatItem.aiMessage.content);
 			this.sessionStore.update(this.sessionItem);
 			this._view?.webview.postMessage({ type: "responseStreamDone", value: respData });
-			vscode.window.showInformationMessage(vscode.l10n.t("Answer output completed"));
 		}, (_err) => {
 			// 接口请求失败
 			this.sessionStore.update(this.sessionItem);
@@ -293,7 +285,6 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 
 	// 停止生成流
 	private stopGenerationStream() {
-		this.stopGeneate = true;
 		stopEventStream();
 	}
 
@@ -582,7 +573,7 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 											infinite-scroll style="height: calc(98vh - 190px) !important">
 											<div id="start-chat" style="display: block">
 												<center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center><p>&nbsp;</p></center><center>
-												<h3 style="color: lightblue;font-size: larger">嗨，我是你的智能编码助手。请问有什么可以帮助您？</h3>
+												<h3 style="color: var( --vscode-chat-slashCommandForeground);font-size: larger">嗨，我是你的智能编码助手。请问有什么可以帮助您？</h3>
 												</center><center><p>&nbsp;</p></center>
 												<p>&nbsp;&nbsp;•&nbsp;快捷键Ctrl + D 可以随时召唤我。</p>
 												<p>&nbsp;&nbsp;•&nbsp;选中代码后右击触发快捷命令。</p>

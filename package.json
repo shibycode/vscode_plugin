@@ -31,7 +31,7 @@
       "title": "CodeDcit",
       "properties": {
         "CodeDcit.ServerAddress": {
-          "description": "The address of the CodeDcit server to connect to.",
+          "description": "%codedcit.address.connect%",
           "default": "http://10.0.5.118:9002",
           "type": "string",
           "order": 1
