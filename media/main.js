@@ -47,6 +47,10 @@
         startNewChat(message.value)
         break
       }
+      case 'showComponentList': {
+        showComponent();
+        break;
+      }
     }
   })
 
@@ -475,6 +479,9 @@
 
     let hisDiv = document.getElementById('aichat_history_div')
     hisDiv.style.display = 'none'
+
+    let componentDiv = document.getElementById('aichat_component_div');
+    componentDiv.style.display = 'none'
   }
 
   // 展示历史对话List
@@ -486,6 +493,21 @@
 
     let hisDiv = document.getElementById('aichat_history_div')
     hisDiv.style.display = 'block'
+
+    let componentDiv = document.getElementById('aichat_component_div');
+    componentDiv.style.display = 'none'
+  }
+
+  // 展示组件List
+  function showComponent() {
+    let chatDiv = document.getElementById('main-div-aichat');
+    chatDiv.style.display = 'none'
+
+    let componentDiv = document.getElementById('aichat_component_div');
+    componentDiv.style.display = 'block'
+
+    let hisDiv = document.getElementById('aichat_history_div');
+    hisDiv.style.display = 'none'
   }
 
   // input框 监听键盘事件
@@ -583,6 +605,13 @@
 
   document
     .getElementById('historyBackButton')
+    .addEventListener('click', (event) => {
+      showChat_hideHistory()
+    })
+
+    // 组件列表返回按钮
+  document
+    .getElementById('componentBackButton')
     .addEventListener('click', (event) => {
       showChat_hideHistory()
     })

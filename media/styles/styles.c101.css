@@ -44,7 +44,7 @@ body.body-y-scroll {
 }
 
 .answerDiv {
-    color: #fff;
+    background: var(--vscode-badge-background);
     font-size: var(--font13);
     margin: 10px 0;
     white-space: break-spaces;
@@ -199,7 +199,8 @@ ul {
 }
 
 .questionDiv {
-    background: #007ACC;
+    background: var(--vscode-badge-background);
+    opacity: 0.7;
     border-radius: 12px 12px 4px 4px;
     padding: 4px;
     color: #fff;
@@ -271,7 +272,6 @@ ul {
 }
 
 .answerDiv {
-    background: #44484A;
     border-radius: 12px 12px 12px 4px;
     padding: 4px;
     margin: 0;
@@ -302,7 +302,7 @@ ul {
     width: 100%;
     left: 0;
     padding: 10px;
-    background: var(--vscode-breadcrumb-background);
+    background: var(--vscode-sideBar-background);
 }
 
 .back-btn {
@@ -457,7 +457,6 @@ pre {
     align-items: center;
     display: flex;
     justify-content: flex-end;
-    background: #171818;
     height: 32px;
     border-radius: 4px 4px 0 0
 }

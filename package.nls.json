@@ -17,6 +17,7 @@
     "codedcit.chat.max.tokens": "Maximum number of tokens for which chat messages will be displayed",
     "codedcit.open.chat": "Open a new session",
     "codedcit.open.history": "Historical Dialogue",
+    "codedcit.insert.components": "Quick insertion of components",
     "codedcit.open.settings": "Settings"
 
 }

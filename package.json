@@ -170,6 +170,14 @@
         }
       },
       {
+        "command": "codedcit.insert.components",
+        "title": "%codedcit.insert.components%",
+        "icon": {
+          "dark": "assets/insert_dark.svg",
+          "light": "assets/insert_light.svg"
+        }
+      },
+      {
         "command": "codedcit.open.settings",
         "title": "%codedcit.open.settings%",
         "icon": {
@@ -246,8 +254,14 @@
           "when": "view == codedcit.chatView"
         },
         {
-          "command": "codedcit.open.settings",
+          "command": "codedcit.insert.components",
           "group": "navigation@3",
+          "order": 2,
+          "when": "view == codedcit.chatView"
+        },
+        {
+          "command": "codedcit.open.settings",
+          "group": "navigation@4",
           "order": 3,
           "when": "view == codedcit.chatView"
         }
