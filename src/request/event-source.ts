@@ -2,12 +2,12 @@
  * @Description: 
  * @Author: shiby
  * @Date: 2024-06-26 14:05:05
- * @LastEditTime: 2024-06-27 10:41:09
+ * @LastEditTime: 2024-06-28 11:04:38
  * @LastEditors: shiby
  * @Reference: 
  */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { MAX_TOKENS_CHAT, MODEL_ENV, STOP_WORDS } from "../consts";
+import { MAX_TOKENS_CHAT, MODEL_ENV, SERVER_ADDR_CHAT, STOP_WORDS } from "../consts";
 import { RequestData } from "./commons";
 import { FetchStream } from "./fetch-stream";
 
@@ -27,7 +27,8 @@ export async function postEventStream(
     if (requestData) {
         abortController = new AbortController();
         new FetchStream({
-            url: 'http://10.0.5.118:9002/streamingInterface/promptEngineTemplate/testStream',
+            // url: 'http://10.0.5.118:9002/streamingInterface/promptEngineTemplate/testStream',
+            url: SERVER_ADDR_CHAT + requestData.uri,
             requestInit: {
                 method: "POST",
                 headers: {

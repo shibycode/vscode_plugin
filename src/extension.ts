@@ -1,9 +1,17 @@
+/*
+ * @Description: 
+ * @Author: shiby
+ * @Date: 2024-06-26 14:05:05
+ * @LastEditTime: 2024-06-28 11:09:36
+ * @LastEditors: shiby
+ * @Reference: 
+ */
 // The module "vscode" contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { CodeCompletionProvider } from "./CodeCompletionProvider";
 import { CodeWebviewViewProvider } from "./CodeWebviewViewProvider";
-import { CODESHELL_CONFIG } from "./consts";
+import { CODEDCITS_CONFIG } from "./consts";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -70,7 +78,7 @@ function registerCompleteionExtension(context: vscode.ExtensionContext) {
  );
 
  // 如果已配置自动触发完成，执行相应命令
- if (CODESHELL_CONFIG.get("AutoTriggerCompletion")) {
+ if (CODEDCITS_CONFIG.get("AutoTriggerCompletion")) {
   vscode.commands.executeCommand("codedcit.auto_completion_enable");
  } else {
   vscode.commands.executeCommand("codedcit.auto_completion_disable");

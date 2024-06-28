@@ -30,11 +30,17 @@
     "configuration": {
       "title": "CodeDcit",
       "properties": {
+        "CodeDcit.ServerAddress": {
+          "description": "The address of the CodeDcit server to connect to.",
+          "default": "http://10.0.5.118:9002",
+          "type": "string",
+          "order": 1
+        },
         "CodeDcit.AutoTriggerCompletion": {
           "description": "%codedcit.auto.completion%",
           "default": true,
           "type": "boolean",
-          "order": 1
+          "order": 2
         },
         "CodeDcit.AutoCompletionDelay": {
           "description": "%codedcit.delay.time%",
@@ -45,17 +51,17 @@
             3
           ],
           "default": 1,
-          "order": 2
+          "order": 3
         },
         "CodeDcit.SwitchModel": {
-          "description":  "%codedcit.switch.model%",
+          "description": "%codedcit.switch.model%",
           "default": "Phind-CodeLlama-34B-v2-GPTQ",
           "enum": [
             "Phind-CodeLlama-34B-v2-GPTQ",
             "Qwen1.5-14B-Chat"
           ],
           "type": "string",
-          "order": 3
+          "order": 4
         },
         "CodeDcit.CompletionMaxTokens": {
           "description": "%codedcit.completion.max.tokens%",
@@ -68,7 +74,7 @@
             1024
           ],
           "default": 64,
-          "order": 4
+          "order": 5
         },
         "CodeDcit.ChatMaxTokens": {
           "description": "%codedcit.chat.max.tokens%",
@@ -80,7 +86,7 @@
             8192
           ],
           "default": 2048,
-          "order": 5
+          "order": 6
         }
       }
     },

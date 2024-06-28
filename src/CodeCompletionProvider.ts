@@ -1,7 +1,15 @@
+/*
+ * @Description: 
+ * @Author: shiby
+ * @Date: 2024-06-26 14:05:05
+ * @LastEditTime: 2024-06-28 11:10:47
+ * @LastEditors: shiby
+ * @Reference: 
+ */
 import { CancellationToken, InlineCompletionContext, InlineCompletionItem, InlineCompletionItemProvider, InlineCompletionList, Position, ProviderResult, Range, TextDocument, window, StatusBarItem, InlineCompletionTriggerKind } from "vscode";
 import { postCompletion } from "./request/inline-completion";
 import { sleep } from "./Utils";
-import { CODESHELL_CONFIG } from "./consts";
+import { CODEDCITS_CONFIG } from "./consts";
 
 export class CodeCompletionProvider implements InlineCompletionItemProvider {
 
@@ -14,12 +22,12 @@ export class CodeCompletionProvider implements InlineCompletionItemProvider {
     //@ts-ignore
     // because ASYNC and PROMISE
     public async provideInlineCompletionItems(document: TextDocument, position: Position, context: InlineCompletionContext, token: CancellationToken): ProviderResult<InlineCompletionItem[] | InlineCompletionList> {
-        let autoTriggerEnabled = CODESHELL_CONFIG.get("AutoTriggerCompletion") as boolean;
+        let autoTriggerEnabled = CODEDCITS_CONFIG.get("AutoTriggerCompletion") as boolean;
         if (context.triggerKind === InlineCompletionTriggerKind.Automatic) {
             if (!autoTriggerEnabled) {
                 return Promise.resolve(([] as InlineCompletionItem[]));
             }
-            let delay = CODESHELL_CONFIG.get("AutoCompletionDelay") as number;
+            let delay = CODEDCITS_CONFIG.get("AutoCompletionDelay") as number;
             await sleep(1000 * delay);
             if (token.isCancellationRequested) {
                 return Promise.resolve(([] as InlineCompletionItem[]));
