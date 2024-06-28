@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Author: shiby
+ * @Date: 2024-06-26 14:05:05
+ * @LastEditTime: 2024-06-27 10:41:09
+ * @LastEditors: shiby
+ * @Reference: 
+ */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MAX_TOKENS_CHAT, MODEL_ENV, STOP_WORDS } from "../consts";
 import { RequestData } from "./commons";
@@ -25,7 +33,8 @@ export async function postEventStream(
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: requestData.body,
+                body: JSON.stringify(requestData.body),
+                // body: requestData.body,
                 signal: abortController.signal
             },
             onmessage: msgCallback,

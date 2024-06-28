@@ -1,10 +1,10 @@
-// @ts-ignore 
+// @ts-ignore
 /* eslint-disable */
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
-(function () {
-  const vscode = acquireVsCodeApi();
+;(function () {
+  const vscode = acquireVsCodeApi()
 
   // 将文本转换为html
   const showdownConverter = new showdown.Converter({
@@ -12,181 +12,201 @@
     simplifiedAutoLink: true,
     excludeTrailingPunctuationFromURLs: true,
     literalMidWordUnderscores: true,
-    simpleLineBreaks: true
-  });
+    simpleLineBreaks: true,
+  })
 
   // Handle messages sent from the extension to the webview
-  window.addEventListener("message", (event) => {
-    const message = event.data;
+  window.addEventListener('message', (event) => {
+    const message = event.data
     switch (message.type) {
-      case "addQuestionAnswerDiv": {
-        addQuestionAnswerDiv(message.value);
-        break;
+      case 'addQuestionAnswerDiv': {
+        addQuestionAnswerDiv(message.value)
+        break
       }
-      case "addStreamResponse": {
-        addStreamResponse(message.value);
-        break;
+      case 'addStreamResponse': {
+        addStreamResponse(message.value)
+        break
       }
-      case "responseStreamDone": {
-        responseStreamDone(message.value);
-        break;
+      // case 'responseStreamDone': {
+      //   responseStreamDone(message.value)
+      //   break
+      // }
+      case 'historySessionDone': {
+        historySessionDone(message.value)
+        break
       }
-      case "historySessionDone": {
-        historySessionDone(message.value);
-        break;
+      case 'historyQuestionAnswerDone': {
+        historyQuestionAnswerDone(message.value)
+        break
       }
-      case "historyQuestionAnswerDone": {
-        historyQuestionAnswerDone(message.value);
-        break;
+      case 'clickOpenHistory': {
+        openHistory()
+        break
       }
-      case "clickOpenHistory": {
-        openHistory();
-        break;
-      }
-      case "startNewChat": {
-        startNewChat(message.value);
-        break;
+      case 'startNewChat': {
+        startNewChat(message.value)
+        break
       }
     }
-  });
+  })
 
   // 替换showdown转换为html时code标签的class属性
   function fixCodeClasses(responseText) {
     // 去掉code标签的class属性 防止代码高亮失效
-    return responseText.replace(/<code(.*?)class="(.*?)"(.*?)>/gi, '<code$1$3>');
-  };
-
-// 开始提问
-  function addQuestionAnswerDiv(eventData) {
-
-    // 展示停止回答按钮
-    document.getElementById("generte-stop").style.display = "flex";
-    document.getElementById("btn-stop-streaming").style.display = "flex";
-    document.getElementById("refreshBtn").style.display = "none";
-
-    // 隐藏欢迎页面的提示信息
-    if (document.getElementById("start-chat")) {
-      document.getElementById("start-chat").style.display = "none";
-    }
-    let chatContainer = document.getElementById("chatContainerQuestionListId");
-
-    div = document.createElement("div")
-    div.innerHTML = eventData.divContent
-    chatContainer.appendChild(div);
-
-    let questionDiv = document.getElementById(`questionDiv${eventData.contentIndex}`);
-    html = showdownConverter.makeHtml(eventData.question);
-    questionDiv.innerHTML = fixCodeClasses(html);
-    hljs.highlightAll();
-
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    questionEditBtn(eventData.contentIndex, eventData.question);
-    addExpandButtons(eventData.contentIndex);
-    codeExpandButtonsEvent(eventData.contentIndex);
-    showChat_hideHistory();
+    return responseText.replace(/<code(.*?)class="(.*?)"(.*?)>/gi, '<code$1$3>')
   }
 
-  // 展示ai回复 
-  function addStreamResponse(eventData) {
-    const contentIndex = eventData.contentIndex;
-    const responseText = fixCodeBlocks(eventData.responseText);
+  // 开始提问
+  function addQuestionAnswerDiv(eventData) {
+    // 展示停止回答按钮
+    document.getElementById('generte-stop').style.display = 'flex'
+    document.getElementById('btn-stop-streaming').style.display = 'flex'
+    document.getElementById('refreshBtn').style.display = 'none'
 
-    const html = showdownConverter.makeHtml(responseText);
-    const outputDiv = document.getElementById(`outputDiv${contentIndex}`);
-    outputDiv.innerHTML = null;
-    outputDiv.innerHTML = fixCodeClasses(html);;
-    addCodeBlockButtons(contentIndex);
-    hljs.highlightAll();
+    // 隐藏欢迎页面的提示信息
+    if (document.getElementById('start-chat')) {
+      document.getElementById('start-chat').style.display = 'none'
+    }
+    let chatContainer = document.getElementById('chatContainerQuestionListId')
+
+    div = document.createElement('div')
+    div.innerHTML = eventData.divContent
+    chatContainer.appendChild(div)
+
+    let questionDiv = document.getElementById(
+      `questionDiv${eventData.contentIndex}`
+    )
+    html = showdownConverter.makeHtml(eventData.question)
+    questionDiv.innerHTML = fixCodeClasses(html)
+    hljs.highlightAll()
+
+    chatContainer.scrollTop = chatContainer.scrollHeight
+    questionEditBtn(eventData.contentIndex, eventData.question)
+    addExpandButtons(eventData.contentIndex)
+    codeExpandButtonsEvent(eventData.contentIndex)
+    showChat_hideHistory()
+  }
+
+  // 展示ai回复
+  function addStreamResponse(eventData) {
+    console.log('展示ai回复:', eventData)
+    const contentIndex = eventData.contentIndex
+    const responseText = fixCodeBlocks(eventData.responseText)
+
+    const html = showdownConverter.makeHtml(responseText)
+    const outputDiv = document.getElementById(`outputDiv${contentIndex}`)
+    outputDiv.innerHTML = null
+    outputDiv.innerHTML = fixCodeClasses(html)
+    addCodeBlockButtons(contentIndex)
+    hljs.highlightAll()
 
     // 重新回答
-    answerRefreshBtn(contentIndex);
-    
-    codeBlockButtonEvent(contentIndex);
+    answerRefreshBtn(contentIndex)
 
-    const chatContainer = document.getElementById("chatContainerQuestionListId");
-    const testNextDiv = document.getElementById(`qa_section_div_${contentIndex + 1}`);
+    codeBlockButtonEvent(contentIndex)
+
+    const chatContainer = document.getElementById('chatContainerQuestionListId')
+    const testNextDiv = document.getElementById(
+      `qa_section_div_${contentIndex + 1}`
+    )
     if (!testNextDiv) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      chatContainer.scrollTop = chatContainer.scrollHeight
     }
-    // 停止生成按钮 
-    document.getElementById("btn-stop-streaming").style.display = "none";
-    document.getElementById("refreshBtn").style.display = "flex";
+    // 停止生成按钮
+    document.getElementById('btn-stop-streaming').style.display = 'none'
+    document.getElementById('refreshBtn').style.display = 'flex'
   }
 
   // ai回复为空 || 接口请求失败
   function responseStreamDone(eventData) {
-    const contentIndex = eventData.contentIndex;
-    const responseText = eventData.responseText;
+    console.log('ai回复', eventData)
+    const contentIndex = eventData.contentIndex
+    const responseText = eventData.responseText
 
     // 给定默认回复
-    const html = showdownConverter.makeHtml('出问题了，请重试');
-    const outputDiv = document.getElementById(`outputDiv${contentIndex}`);
-    outputDiv.innerHTML = null;
-    outputDiv.innerHTML = fixCodeClasses(html);
+    const html = showdownConverter.makeHtml('出问题了，请重试')
+    const outputDiv = document.getElementById(`outputDiv${contentIndex}`)
+    outputDiv.innerHTML = null
+    outputDiv.innerHTML = fixCodeClasses(html)
 
     // answerCopyBtn(contentIndex, responseText);
-    answerRefreshBtn(contentIndex);
-    codeBlockButtonEvent(contentIndex);
-    handleFeedbackBtns(eventData);
+    answerRefreshBtn(contentIndex)
+    codeBlockButtonEvent(contentIndex)
+    handleFeedbackBtns(eventData)
 
-    hljs.highlightAll();
+    hljs.highlightAll()
     // 停止生成按钮 暂时不用
-    document.getElementById("btn-stop-streaming").style.display = "none";
-    document.getElementById("refreshBtn").style.display = "flex";
+    document.getElementById('btn-stop-streaming').style.display = 'none'
+    document.getElementById('refreshBtn').style.display = 'flex'
   }
 
   function handleFeedbackBtns(eventData) {
-    const contentIndex = eventData.contentIndex;
-    if (eventData.aiMsgId && eventData.aiMsgId !== "0") {
-      const feedbackDiv = document.getElementById(`feedbackDiv${contentIndex}`);
-      feedbackDiv.style.display = "flex";
+    const contentIndex = eventData.contentIndex
+    if (eventData.aiMsgId && eventData.aiMsgId !== '0') {
+      const feedbackDiv = document.getElementById(`feedbackDiv${contentIndex}`)
+      feedbackDiv.style.display = 'flex'
 
-      const feedbackGoodBtn = document.getElementById(`feedbackGoodBtn${contentIndex}`);
-      const feedbackCheckBtn = document.getElementById(`feedbackCheckBtn${contentIndex}`);
-      const feedbackBadBtn = document.getElementById(`feedbackBadBtn${contentIndex}`);
+      const feedbackGoodBtn = document.getElementById(
+        `feedbackGoodBtn${contentIndex}`
+      )
+      const feedbackCheckBtn = document.getElementById(
+        `feedbackCheckBtn${contentIndex}`
+      )
+      const feedbackBadBtn = document.getElementById(
+        `feedbackBadBtn${contentIndex}`
+      )
 
       if (feedbackGoodBtn.clickHandler) {
-        feedbackGoodBtn.removeEventListener("click", feedbackGoodBtn.clickHandler)
+        feedbackGoodBtn.removeEventListener(
+          'click',
+          feedbackGoodBtn.clickHandler
+        )
       }
       feedbackGoodBtn.clickHandler = (e) => {
-        vscode.postMessage({ type: "answerFeedbackGood", value: eventData.aiMsgId });
-        feedbackGoodBtn.style.display = "none";
-        feedbackCheckBtn.style.display = "flex";
+        vscode.postMessage({
+          type: 'answerFeedbackGood',
+          value: eventData.aiMsgId,
+        })
+        feedbackGoodBtn.style.display = 'none'
+        feedbackCheckBtn.style.display = 'flex'
         setTimeout(() => {
-          feedbackGoodBtn.style.display = "flex";
-          feedbackCheckBtn.style.display = "none";
-        }, 500);
+          feedbackGoodBtn.style.display = 'flex'
+          feedbackCheckBtn.style.display = 'none'
+        }, 500)
       }
-      feedbackGoodBtn.addEventListener("click", feedbackGoodBtn.clickHandler);
+      feedbackGoodBtn.addEventListener('click', feedbackGoodBtn.clickHandler)
 
       if (feedbackBadBtn.clickHandler) {
-        feedbackBadBtn.removeEventListener("click", feedbackBadBtn.clickHandler)
+        feedbackBadBtn.removeEventListener('click', feedbackBadBtn.clickHandler)
       }
       feedbackBadBtn.clickHandler = (e) => {
-        vscode.postMessage({ type: "answerFeedbackBad", value: eventData.aiMsgId });
-        feedbackBadBtn.style.display = "none";
-        feedbackCheckBtn.style.display = "flex";
+        vscode.postMessage({
+          type: 'answerFeedbackBad',
+          value: eventData.aiMsgId,
+        })
+        feedbackBadBtn.style.display = 'none'
+        feedbackCheckBtn.style.display = 'flex'
         setTimeout(() => {
-          feedbackBadBtn.style.display = "flex";
-          feedbackCheckBtn.style.display = "none";
-        }, 500);
+          feedbackBadBtn.style.display = 'flex'
+          feedbackCheckBtn.style.display = 'none'
+        }, 500)
       }
-      feedbackBadBtn.addEventListener("click", feedbackBadBtn.clickHandler);
+      feedbackBadBtn.addEventListener('click', feedbackBadBtn.clickHandler)
     }
   }
 
   // 提问的代码块增加 折叠收起按钮
   function addExpandButtons(outputIndex) {
-    const outputDiv = document.getElementById(`questionDiv${outputIndex}`);
-    const preBlocks = outputDiv.querySelectorAll("pre");
+    const outputDiv = document.getElementById(`questionDiv${outputIndex}`)
+    const preBlocks = outputDiv.querySelectorAll('pre')
     for (let i = 0; i < preBlocks.length; i++) {
-      const preBlock = preBlocks[i];
-      const blockIndex = `${outputIndex}_${i}`;
+      const preBlock = preBlocks[i]
+      const blockIndex = `${outputIndex}_${i}`
       preBlock.id = `question_pre_${blockIndex}`
       // 高度超过200px  添加展开折叠按钮
       if (preBlock.clientHeight > 200) {
-        div = document.createElement("div")
-        div.classList.add("p0", "operations")
+        div = document.createElement('div')
+        div.classList.add('p0', 'operations')
         div.innerHTML = `<div class="copy-btn copy-btn-icon inner-btns" style="float: right;"> 
         <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Compress" style="display: flex;" id="compressBtn_${blockIndex}">
           <svg t="1719294896326" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="40477" data-spm-anchor-id="a313x.search_index.0.i10.76a23a81PYlpN3" width="16" height="16">
@@ -199,52 +219,52 @@
           </svg>
         </div>
         </div>`
-        preBlock.prepend(div);
+        preBlock.prepend(div)
       }
     }
   }
 
   //代码块的折叠收起按钮添加处理事件
   function codeExpandButtonsEvent(outputIndex) {
-    const outputDiv = document.getElementById(`questionDiv${outputIndex}`);
-    const preBlocks = outputDiv.querySelectorAll("pre");
+    const outputDiv = document.getElementById(`questionDiv${outputIndex}`)
+    const preBlocks = outputDiv.querySelectorAll('pre')
     for (let i = 0; i < preBlocks.length; i++) {
-      let preBlock = preBlocks[i];
-      let blockIndex = `${outputIndex}_${i}`;
+      let preBlock = preBlocks[i]
+      let blockIndex = `${outputIndex}_${i}`
 
       // 高度超过200px  添加展开折叠按钮
       if (preBlock.clientHeight > 200) {
-        let expandBtn = document.getElementById(`expandBtn_${blockIndex}`);
-        expandBtn.addEventListener("click", (e) => {
-          let compressBtn = document.getElementById(`compressBtn_${blockIndex}`);
-          compressBtn.style.display = "flex";
-          expandBtn.style.display = "none";
+        let expandBtn = document.getElementById(`expandBtn_${blockIndex}`)
+        expandBtn.addEventListener('click', (e) => {
+          let compressBtn = document.getElementById(`compressBtn_${blockIndex}`)
+          compressBtn.style.display = 'flex'
+          expandBtn.style.display = 'none'
           // 展开代码
-          preBlock.classList.remove("maskDiv");
-        });
+          preBlock.classList.remove('maskDiv')
+        })
 
-        let compressBtn = document.getElementById(`compressBtn_${blockIndex}`);
-        compressBtn.addEventListener("click", (e) => {
-          let expandBtn = document.getElementById(`expandBtn_${blockIndex}`);
-          compressBtn.style.display = "none";
-          expandBtn.style.display = "flex";
-          preBlock.classList.add("maskDiv");
-        });
+        let compressBtn = document.getElementById(`compressBtn_${blockIndex}`)
+        compressBtn.addEventListener('click', (e) => {
+          let expandBtn = document.getElementById(`expandBtn_${blockIndex}`)
+          compressBtn.style.display = 'none'
+          expandBtn.style.display = 'flex'
+          preBlock.classList.add('maskDiv')
+        })
       }
     }
   }
 
   // 回复的代码块添加复制 插入 保存到文件 按钮
   function addCodeBlockButtons(outputIndex) {
-    const outputDiv = document.getElementById(`outputDiv${outputIndex}`);
-    const preBlocks = outputDiv.querySelectorAll("pre");
+    const outputDiv = document.getElementById(`outputDiv${outputIndex}`)
+    const preBlocks = outputDiv.querySelectorAll('pre')
     for (let i = 0; i < preBlocks.length; i++) {
-      const preBlock = preBlocks[i];
-      const blockIndex = `${outputIndex}_${i}`;
+      const preBlock = preBlocks[i]
+      const blockIndex = `${outputIndex}_${i}`
       preBlock.id = `output_pre_${blockIndex}`
 
-      div = document.createElement("div")
-      div.classList.add("p0", "operations")
+      div = document.createElement('div')
+      div.classList.add('p0', 'operations')
       div.innerHTML = `<div class="copy-btn copy-btn-icon inner-btns" style="float: right;"> 
       <div class="copy-btn copybtn-icn focus-on-tab inner-btns" title="Copy" style="float: right;" id="codeCopyBtn_${blockIndex}">
         <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
@@ -283,274 +303,310 @@
       } else {
         div.innerHTML += `</div>`
       }
-      preBlock.prepend(div);
+      preBlock.prepend(div)
     }
   }
 
   //回复代码块的复制 插入 保存到文件 按钮添加处理事件
   function codeBlockButtonEvent(outputIndex) {
-    const outputDiv = document.getElementById(`outputDiv${outputIndex}`);
-    const preBlocks = outputDiv.querySelectorAll("pre");
+    const outputDiv = document.getElementById(`outputDiv${outputIndex}`)
+    const preBlocks = outputDiv.querySelectorAll('pre')
     for (let i = 0; i < preBlocks.length; i++) {
-      let preBlock = preBlocks[i];
-      let blockIndex = `${outputIndex}_${i}`;
+      let preBlock = preBlocks[i]
+      let blockIndex = `${outputIndex}_${i}`
 
-      let codeCopyBtn = document.getElementById(`codeCopyBtn_${blockIndex}`);
-      codeCopyBtn.addEventListener("click", (e) => {
-        navigator.clipboard.writeText(preBlock.innerText);
-        let copyCheck = document.getElementById(`codeCopyCheck_${blockIndex}`);
-        copyCheck.style.display = "flex";
-        codeCopyBtn.style.display = "none";
+      let codeCopyBtn = document.getElementById(`codeCopyBtn_${blockIndex}`)
+      codeCopyBtn.addEventListener('click', (e) => {
+        navigator.clipboard.writeText(preBlock.innerText)
+        let copyCheck = document.getElementById(`codeCopyCheck_${blockIndex}`)
+        copyCheck.style.display = 'flex'
+        codeCopyBtn.style.display = 'none'
         setTimeout(() => {
-          copyCheck.style.display = "none";
-          codeCopyBtn.style.display = "flex";
-        }, 2000);
-      });
+          copyCheck.style.display = 'none'
+          codeCopyBtn.style.display = 'flex'
+        }, 2000)
+      })
 
-      let insertBtn = document.getElementById(`codeInsertBtn_${blockIndex}`);
-      insertBtn.addEventListener("click", (e) => {
-        navigator.clipboard.writeText(preBlock.innerText);
-        vscode.postMessage({ type: "codeBlockInsert", value: preBlock.innerText });
-        let copyCheck = document.getElementById(`codeCopyCheck_${blockIndex}`);
-        copyCheck.style.display = "flex";
-        insertBtn.style.display = "none";
+      let insertBtn = document.getElementById(`codeInsertBtn_${blockIndex}`)
+      insertBtn.addEventListener('click', (e) => {
+        navigator.clipboard.writeText(preBlock.innerText)
+        vscode.postMessage({
+          type: 'codeBlockInsert',
+          value: preBlock.innerText,
+        })
+        let copyCheck = document.getElementById(`codeCopyCheck_${blockIndex}`)
+        copyCheck.style.display = 'flex'
+        insertBtn.style.display = 'none'
         setTimeout(() => {
-          copyCheck.style.display = "none";
-          insertBtn.style.display = "flex";
-        }, 2000);
-      });
-      
-      let addFileBtn = document.getElementById(`addFileBtn_${blockIndex}`);
-      addFileBtn.addEventListener("click", (e) => {
-        navigator.clipboard.writeText(preBlock.innerText);
-        vscode.postMessage({ type: "addFileCode", value: preBlock.innerText });
-      });
+          copyCheck.style.display = 'none'
+          insertBtn.style.display = 'flex'
+        }, 2000)
+      })
+
+      let addFileBtn = document.getElementById(`addFileBtn_${blockIndex}`)
+      addFileBtn.addEventListener('click', (e) => {
+        navigator.clipboard.writeText(preBlock.innerText)
+        vscode.postMessage({ type: 'addFileCode', value: preBlock.innerText })
+      })
 
       // 高度超过200px  添加展开折叠按钮
       if (preBlock.clientHeight > 200) {
-        let expandBtn = document.getElementById(`expand_output_Btn_${blockIndex}`);
-        expandBtn.addEventListener("click", (e) => {
-          let compressBtn = document.getElementById(`compress_output_Btn_${blockIndex}`);
-          compressBtn.style.display = "flex";
-          expandBtn.style.display = "none";
+        let expandBtn = document.getElementById(
+          `expand_output_Btn_${blockIndex}`
+        )
+        expandBtn.addEventListener('click', (e) => {
+          let compressBtn = document.getElementById(
+            `compress_output_Btn_${blockIndex}`
+          )
+          compressBtn.style.display = 'flex'
+          expandBtn.style.display = 'none'
           // 展开代码
-          preBlock.classList.remove("maskDiv");
-        });
+          preBlock.classList.remove('maskDiv')
+        })
 
-        let compressBtn = document.getElementById(`compress_output_Btn_${blockIndex}`);
-        compressBtn.addEventListener("click", (e) => {
-          let expandBtn = document.getElementById(`expand_output_Btn_${blockIndex}`);
-          compressBtn.style.display = "none";
-          expandBtn.style.display = "flex";
-          preBlock.classList.add("maskDiv");
-        });
+        let compressBtn = document.getElementById(
+          `compress_output_Btn_${blockIndex}`
+        )
+        compressBtn.addEventListener('click', (e) => {
+          let expandBtn = document.getElementById(
+            `expand_output_Btn_${blockIndex}`
+          )
+          compressBtn.style.display = 'none'
+          expandBtn.style.display = 'flex'
+          preBlock.classList.add('maskDiv')
+        })
       }
     }
   }
 
   function historySessionDone(eventData) {
-    let div = document.getElementById("history_session_div");
-    div.innerHTML = eventData;
+    let div = document.getElementById('history_session_div')
+    div.innerHTML = eventData
 
-    let sessionDivs = document.querySelectorAll("div.session");
+    let sessionDivs = document.querySelectorAll('div.session')
     for (let sessionDiv of sessionDivs) {
-      let itemDiv = sessionDiv.querySelector("div.session-item");
-      itemDiv.addEventListener("click", e => {
-        vscode.postMessage({ type: "sessionItemClicked", value: sessionDiv.id });
-      });
+      let itemDiv = sessionDiv.querySelector('div.session-item')
+      itemDiv.addEventListener('click', (e) => {
+        vscode.postMessage({ type: 'sessionItemClicked', value: sessionDiv.id })
+      })
 
       // 历史对话删除按钮
-      let deleteDiv = sessionDiv.querySelector("div.session-options");
-      deleteDiv.addEventListener("click", e => {
-        vscode.postMessage({ type: "sessionItemDelete", value: sessionDiv.id });
-      });
+      let deleteDiv = sessionDiv.querySelector('div.session-options')
+      deleteDiv.addEventListener('click', (e) => {
+        vscode.postMessage({ type: 'sessionItemDelete', value: sessionDiv.id })
+      })
     }
   }
 
   function historyQuestionAnswerDone(eventData) {
-    showChat_hideHistory();
+    showChat_hideHistory()
 
-    div = document.createElement("div")
-    div.innerHTML = eventData.divContent;
-    let chatContainer = document.getElementById("chatContainerQuestionListId");
-    chatContainer.innerHTML = null;
-    chatContainer.appendChild(div);
+    div = document.createElement('div')
+    div.innerHTML = eventData.divContent
+    let chatContainer = document.getElementById('chatContainerQuestionListId')
+    chatContainer.innerHTML = null
+    chatContainer.appendChild(div)
 
     for (let i = 0; i < eventData.chatList.length; i++) {
-      let question = eventData.chatList[i].humanMessage.content;
-      let answer = eventData.chatList[i].aiMessage.content;
-      qHtml = showdownConverter.makeHtml(question);
-      document.getElementById(`questionDiv${i}`).innerHTML = fixCodeClasses(qHtml);
-      aHtml = showdownConverter.makeHtml(answer);
-      document.getElementById(`outputDiv${i}`).innerHTML = fixCodeClasses(aHtml);
+      let question = eventData.chatList[i].humanMessage.content
+      let answer = eventData.chatList[i].aiMessage.content
+      qHtml = showdownConverter.makeHtml(question)
+      document.getElementById(`questionDiv${i}`).innerHTML =
+        fixCodeClasses(qHtml)
+      aHtml = showdownConverter.makeHtml(answer)
+      document.getElementById(`outputDiv${i}`).innerHTML = fixCodeClasses(aHtml)
 
-      questionEditBtn(i, question);
+      questionEditBtn(i, question)
       // answerCopyBtn(i, answer);
-      answerRefreshBtn(i);
-      addCodeBlockButtons(i);
-      codeBlockButtonEvent(i);
+      answerRefreshBtn(i)
+      addCodeBlockButtons(i)
+      codeBlockButtonEvent(i)
 
-      addExpandButtons(i);
-      codeExpandButtonsEvent(i);
+      addExpandButtons(i)
+      codeExpandButtonsEvent(i)
     }
-    hljs.highlightAll();
+    hljs.highlightAll()
 
-    const textarea = document.getElementById("questioninput");
+    const textarea = document.getElementById('questioninput')
     if (textarea) {
-      textarea.value = "";
-      textarea.style.height = 'auto';
+      textarea.value = ''
+      textarea.style.height = 'auto'
     }
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    chatContainer.scrollTop = chatContainer.scrollHeight
   }
 
   function questionEditBtn(index, question) {
-    let editBtn = document.getElementById(`editBtn${index}`);
+    let editBtn = document.getElementById(`editBtn${index}`)
     if (editBtn.clickHandler) {
-      editBtn.removeEventListener("click", editBtn.clickHandler)
+      editBtn.removeEventListener('click', editBtn.clickHandler)
     }
     editBtn.clickHandler = (e) => {
-      const textarea = document.getElementById("questioninput");
+      const textarea = document.getElementById('questioninput')
       if (textarea) {
-        textarea.value = question;
-        textarea.style.height = `${textarea.scrollHeight}px`;
+        textarea.value = question
+        textarea.style.height = `${textarea.scrollHeight}px`
       }
     }
-    editBtn.addEventListener("click", editBtn.clickHandler);
+    editBtn.addEventListener('click', editBtn.clickHandler)
   }
   // 重新回答
   function answerRefreshBtn(index) {
-    let refreshBtn = document.getElementById('refreshBtn');
+    let refreshBtn = document.getElementById('refreshBtn')
     if (refreshBtn) {
       if (refreshBtn.clickHandler) {
-        refreshBtn.removeEventListener("click", refreshBtn.clickHandler);
+        refreshBtn.removeEventListener('click', refreshBtn.clickHandler)
       }
       refreshBtn.clickHandler = (e) => {
-        refreshBtn.style.display = "none";
-        document.getElementById("btn-stop-streaming").style.display = "flex";
+        refreshBtn.style.display = 'none'
+        document.getElementById('btn-stop-streaming').style.display = 'flex'
         // loading
-        document.getElementById(`outputDiv${index}`).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="18" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="6" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin="0" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>`;
-        vscode.postMessage({ type: "regenerateThisAnswer", value: index });
+        document.getElementById(
+          `outputDiv${index}`
+        ).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="18" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="6" cy="12" r="0" fill="currentColor"><animate attributeName="r" begin="0" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>`
+        vscode.postMessage({ type: 'regenerateThisAnswer', value: index })
       }
-      refreshBtn.addEventListener("click", refreshBtn.clickHandler);
+      refreshBtn.addEventListener('click', refreshBtn.clickHandler)
     }
   }
 
   function showChat_hideHistory() {
-    let chatDiv = document.getElementById("main-div-aichat");
-    chatDiv.style.display = "block";
+    let chatDiv = document.getElementById('main-div-aichat')
+    chatDiv.style.display = 'block'
 
-    let hisDiv = document.getElementById("aichat_history_div");
-    hisDiv.style.display = "none";
+    let hisDiv = document.getElementById('aichat_history_div')
+    hisDiv.style.display = 'none'
   }
 
   // 展示历史对话List
   function hideChat_showHistory() {
     // 隐藏对话框前 保存当前对话框内容
     // vscode.postMessage({ type: "startNewSession" });
-    let chatDiv = document.getElementById("main-div-aichat");
-    chatDiv.style.display = "none";
+    let chatDiv = document.getElementById('main-div-aichat')
+    chatDiv.style.display = 'none'
 
-    let hisDiv = document.getElementById("aichat_history_div");
-    hisDiv.style.display = "block";
+    let hisDiv = document.getElementById('aichat_history_div')
+    hisDiv.style.display = 'block'
   }
 
   // input框 监听键盘事件
-  document.getElementById("questioninput").addEventListener("keydown", event => {
-    const textarea = event.target;
-    console.debug("event.key =", event.key, ", event.keyCode = ", event.keyCode);
-    console.debug(navigator.userAgent);
-    let isMac = /macintosh|mac os x/i.test(navigator.userAgent);  
-    let isWin = /windows|win32|win64/i.test(navigator.userAgent); 
-    let isLinux = /linux/i.test(navigator.userAgent);
-    console.debug(`isMac=${isMac}, isWin=${isWin}, isLinux=${isLinux}`);
+  document
+    .getElementById('questioninput')
+    .addEventListener('keydown', (event) => {
+      const textarea = event.target
+      console.debug(
+        'event.key =',
+        event.key,
+        ', event.keyCode = ',
+        event.keyCode
+      )
+      console.debug(navigator.userAgent)
+      let isMac = /macintosh|mac os x/i.test(navigator.userAgent)
+      let isWin = /windows|win32|win64/i.test(navigator.userAgent)
+      let isLinux = /linux/i.test(navigator.userAgent)
+      console.debug(`isMac=${isMac}, isWin=${isWin}, isLinux=${isLinux}`)
 
-    if (event.shiftKey && event.key === "Enter") {
-      textarea.style.height = `${textarea.scrollHeight + 5}px`;
-    } else if (((isWin || isLinux) && event.key === "Enter") || (isMac && event.keyCode === 13)) {
-      event.preventDefault();
-      if (textarea.value && textarea.value.trim().length > 0) {
-        vscode.postMessage({ type: "startQuestion", value: textarea.value.trim() });
-        textarea.value = "";
-        textarea.style.height = 'auto';
+      if (event.shiftKey && event.key === 'Enter') {
+        textarea.style.height = `${textarea.scrollHeight + 5}px`
+      } else if (
+        ((isWin || isLinux) && event.key === 'Enter') ||
+        (isMac && event.keyCode === 13)
+      ) {
+        event.preventDefault()
+        if (textarea.value && textarea.value.trim().length > 0) {
+          vscode.postMessage({
+            type: 'startQuestion',
+            value: textarea.value.trim(),
+          })
+          textarea.value = ''
+          textarea.style.height = 'auto'
+        }
       }
-    }
-  });
+    })
 
-//  监听 textarea 内容变化事件
-document.getElementById("questioninput").addEventListener("input", event => {
-  const textarea = event.target;
-   // 重置 textarea 高度为默认高度，以便测量内容的真实高度
-   textarea.style.height = 'auto';
+  //  监听 textarea 内容变化事件
+  document
+    .getElementById('questioninput')
+    .addEventListener('input', (event) => {
+      const textarea = event.target
+      // 重置 textarea 高度为默认高度，以便测量内容的真实高度
+      textarea.style.height = 'auto'
 
-   // 检查内容的滚动高度，并设置 textarea 的高度
-   textarea.style.height = textarea.scrollHeight + 'px';
-});
+      // 检查内容的滚动高度，并设置 textarea 的高度
+      textarea.style.height = textarea.scrollHeight + 'px'
+    })
 
-
-  document.getElementById("questioninput").addEventListener("keyup", event => {
-    const textarea = event.target;
-    if (textarea.value.trim().length === 0) {
-      textarea.style.height = 'auto';
-    }
-  });
+  document
+    .getElementById('questioninput')
+    .addEventListener('keyup', (event) => {
+      const textarea = event.target
+      if (textarea.value.trim().length === 0) {
+        textarea.style.height = 'auto'
+      }
+    })
 
   // input框 发送按钮 点击事件
-  document.getElementById("send-button-img").addEventListener("click", event => {
-    const textarea = document.getElementById("questioninput");
-    if (textarea.value && textarea.value.trim().length > 0) {
-      vscode.postMessage({ type: "startQuestion", value: textarea.value.trim() });
-      textarea.value = "";
-      textarea.style.height = 'auto';
-    }
-  });
+  document
+    .getElementById('send-button-img')
+    .addEventListener('click', (event) => {
+      const textarea = document.getElementById('questioninput')
+      if (textarea.value && textarea.value.trim().length > 0) {
+        vscode.postMessage({
+          type: 'startQuestion',
+          value: textarea.value.trim(),
+        })
+        textarea.value = ''
+        textarea.style.height = 'auto'
+      }
+    })
 
   // 打开历史会话
   function openHistory() {
-    hideChat_showHistory();
+    hideChat_showHistory()
   }
 
   // 开启新对话
   function startNewChat(eventData) {
-    let element = document.getElementById("chatContainerQuestionListId");
-    element.innerHTML = null;
+    let element = document.getElementById('chatContainerQuestionListId')
+    element.innerHTML = null
 
-    div = document.createElement("div")
+    div = document.createElement('div')
     div.innerHTML = eventData
-    element.appendChild(div);
+    element.appendChild(div)
 
     // 隐藏重新回答按钮
-    if (document.getElementById("refreshBtn")) {
-      document.getElementById("refreshBtn").style.display = "none";
+    if (document.getElementById('refreshBtn')) {
+      document.getElementById('refreshBtn').style.display = 'none'
     }
     // 隐藏历史会话
-    showChat_hideHistory();
+    showChat_hideHistory()
   }
 
-  document.getElementById("historyBackButton").addEventListener("click", event => {
-    showChat_hideHistory();
-  });
+  document
+    .getElementById('historyBackButton')
+    .addEventListener('click', (event) => {
+      showChat_hideHistory()
+    })
 
   // 停止生成按钮
-  document.getElementById("btn-stop-streaming").addEventListener("click", event => {
-    vscode.postMessage({ type: "stopGenerationStream" });
-  });
+  document
+    .getElementById('btn-stop-streaming')
+    .addEventListener('click', (event) => {
+      vscode.postMessage({ type: 'stopGenerationStream' })
+    })
 
-  document.addEventListener("contextmenu", event => {
-    event.preventDefault();
-  });
-
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault()
+  })
 
   function fixCodeBlocks(textContent) {
-    const REGEX_CODEBLOCK = new RegExp("\`\`\`", "g");
-    const matches = textContent.match(REGEX_CODEBLOCK);
+    const REGEX_CODEBLOCK = new RegExp('```', 'g')
+    const matches = textContent.match(REGEX_CODEBLOCK)
 
-    const count = matches ? matches.length : 0;
+    const count = matches ? matches.length : 0
     if (count % 2 === 0) {
-      return textContent;
+      return textContent
     } else {
-      return textContent.concat("\n\`\`\`");
+      return textContent.concat('\n```')
     }
   }
-
-
-})();
+})()
