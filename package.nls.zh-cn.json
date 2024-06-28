@@ -17,6 +17,7 @@
     "codedcit.chat.max.tokens": "自动补全最大令牌数",
     "codedcit.open.chat": "开启新会话",
     "codedcit.open.history": "历史对话",
+    "codedcit.insert.components": "组件快速插入",
     "codedcit.open.settings": "设置"
 
 }

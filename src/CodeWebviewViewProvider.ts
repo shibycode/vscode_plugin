@@ -3,6 +3,7 @@ import * as prompt from "./CreatePrompt";
 import { ChatItem, HumanMessage, AIMessage, SessionItem, SessionStore } from "./ChatMemory";
 import { postEventStream, stopEventStream } from "./request/event-source";
 import { sleep } from "./Utils";
+import { getFiles } from "./getWorkspaceFiles";
 
 export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewId = "codedcit.chatView";
@@ -113,8 +114,20 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 			return;
 		}
 
+		// 展示组件列表
+		if (command === 'codedcit.insert.components') {
+			// 保存当前对话
+			this.sessionStore.update(this.sessionItem);
+			this.sessionItem = new SessionItem();
+			this._view?.webview.postMessage({ type: "showComponentList"});
+			return;
+		}
+
 		// 通过快捷键打开插件
 		if (command === 'codedcit.open.plugin') {
+
+			// getFiles();
+
 			if (!this._view) {
 				await vscode.commands.executeCommand("codedcit.chatView.focus");
 				await sleep(1000);
@@ -421,6 +434,54 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 		`;
 	}
 
+	private _makeComponentDiv() {
+		let components = [
+			{
+				name: "Dummy",
+				description: "Dummy component",
+				id: '0'
+			},
+			{
+				name: "BckPage",
+				description: "返回组件,返回至上个页面",
+				id: '1'
+			},
+			{
+				name: "CountDown",
+				description: "倒计时组件",
+				id: '2'
+			},
+			{
+				name: "TablePage",
+				description: "前端分页表格组件",
+				id: '3'
+			},
+		];
+
+		let html = "";
+		components.forEach(item => {
+			html += this._makeComponentItemDiv(item);
+		});
+		return html;
+	}
+
+	private _makeComponentItemDiv(componentItem: any) {
+
+		return `
+			<div class="session" id="${componentItem.id}">
+				<div class="session-item">
+					<p class="session-title"> ${componentItem.name} </p>
+					<p class="session-date-time"> ${componentItem.description} </p>
+				</div>
+				<div id="insertComponent" class="session-options inner-btns ant-dropdown-trigger">
+					<svg t="1719469749633" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14227" width="16" height="16">
+						<path d="M992 528c0 54.4-137.6 134.4-412.8 240v-137.6H80c-25.6 0-48-22.4-48-48v-108.8c0-25.6 22.4-48 48-48h499.2V288c275.2 105.6 412.8 185.6 412.8 240z" fill="currentColor" p-id="14228"></path>
+					</svg>
+				</div>
+			</div>
+		`;
+	}
+
 	private _getHtmlForWebview(webview: vscode.Webview) {
 
 		const mainScriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "main.js"));
@@ -431,6 +492,7 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 		const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "styles"));
 
 		const historySessionItems = this._makeHistoryDiv();
+		const componentSessionItems = this._makeComponentDiv();
 
 
 		return `<!DOCTYPE html>
@@ -494,6 +556,23 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 										<div class="history-panel">
 											<div tabindex="0" infinite-scroll="" class="historyListConainer focus-on-tab" id="history_session_div">
 												${historySessionItems}
+											</div>
+										</div>
+									</div>
+									<div id="aichat_component_div" style="display: none">
+										<div class="history-btn-section row">
+											<div class="col-6 d-flex justify-content-start">
+												<div tabindex="0" id="componentBackButton" class="history-btn focus-on-tab">
+													<svg t="1718328542731" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6417" width="20" height="20">
+														<path d="M395.21518 513.604544l323.135538-312.373427c19.052938-18.416442 19.052938-48.273447 0-66.660212-19.053961-18.416442-49.910737-18.416442-68.964698 0L291.75176 480.290811c-19.052938 18.416442-19.052938 48.273447 0 66.660212l357.633237 345.688183c9.525957 9.207709 22.01234 13.796214 34.497699 13.796214 12.485359 0 24.971741-4.588505 34.466999-13.82896 19.052938-18.416442 19.052938-48.242747 0-66.660212L395.21518 513.604544z" fill="#7a8084" p-id="6418"></path>
+													</svg>
+													<span class="ml-2 history-buttons">${vscode.l10n.t("Back")}</span>
+												</div>
+											</div>
+										</div>
+										<div class="history-panel">
+											<div tabindex="0" infinite-scroll="" class="historyListConainer focus-on-tab" id="history_session_div">
+												${componentSessionItems}
 											</div>
 										</div>
 									</div>
