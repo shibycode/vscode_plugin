@@ -19,6 +19,15 @@ export function activate(context: vscode.ExtensionContext) {
 	registerCompleteionExtension(context);
 	registerWebviewViewExtension(context);
     registerSettingCommand(context);
+
+    const provider = new MyQuickFixProvider();
+
+    // Register the provider for all files
+    const registration = vscode.languages.registerCodeActionsProvider('*', provider);
+
+    // Add to extension activation events
+    context.subscriptions.push(registration);
+
 }
 
 // This method is called when your extension is deactivated
@@ -37,17 +46,22 @@ function registerWebviewViewExtension(context: vscode.ExtensionContext) {
   // 注册命令以执行相关的操作
   vscode.commands.registerCommand("codedcit.explain_this_code", () => provider.executeCommand("codedcit.explain_this_code")),
   vscode.commands.registerCommand("codedcit.improve_this_code", () => provider.executeCommand("codedcit.improve_this_code")),
-  vscode.commands.registerCommand("codedcit.clean_this_code", () => provider.executeCommand("codedcit.clean_this_code")),
+//   vscode.commands.registerCommand("codedcit.clean_this_code", () => provider.executeCommand("codedcit.clean_this_code")),
   vscode.commands.registerCommand("codedcit.generate_comment", () => provider.executeCommand("codedcit.generate_comment")),
-  vscode.commands.registerCommand("codedcit.generate_unit_test", () => provider.executeCommand("codedcit.generate_unit_test")),
+//   vscode.commands.registerCommand("codedcit.generate_unit_test", () => provider.executeCommand("codedcit.generate_unit_test")),
   // vscode.commands.registerCommand("codedcit.check_performance", () => provider.executeCommand("codedcit.check_performance")),
   // vscode.commands.registerCommand("codedcit.check_security", () => provider.executeCommand("codedcit.check_security")),
-  vscode.commands.registerCommand("codedcit.open.history", () => provider.executeCommand("codedcit.open_history")),
-  vscode.commands.registerCommand("codedcit.open.chat", () => provider.executeCommand("codedcit.open_newchat")),
+  vscode.commands.registerCommand("codedcit.open.history", () => provider.toViewCommand("codedcit.open_history")),
+  vscode.commands.registerCommand("codedcit.open.chat", () => provider.toViewCommand("codedcit.open_newchat")),
   vscode.commands.registerCommand("codedcit.code_generation", () => provider.executeCommand("codedcit.code_generation")),
-  vscode.commands.registerCommand("codedcit.insert.components", () => provider.executeCommand("codedcit.insert.components")),
-  vscode.commands.registerCommand("codedcit.open.plugin", () => provider.executeCommand("codedcit.open.plugin")),
+  vscode.commands.registerCommand("codedcit.insert.components", () => provider.toViewCommand("codedcit.insert.components")),
+  vscode.commands.registerCommand("codedcit.open.plugin", () => provider.toViewCommand("codedcit.open.plugin")),
  );
+
+ let disposable = vscode.commands.registerCommand('codedcit.apply.quickFix', 
+    (errorMessage: string, errorCode: string) => provider.quickFixCode(errorMessage, errorCode));
+
+ context.subscriptions.push(disposable);
 }
 // 注册自动提示扩展函数
 function registerCompleteionExtension(context: vscode.ExtensionContext) {
@@ -99,3 +113,28 @@ function registerSettingCommand(context: vscode.ExtensionContext) {
     context.subscriptions.push(openSettingsCommand);
 }
 
+
+export class MyQuickFixProvider implements vscode.CodeActionProvider {
+    provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeAction[]> {
+      // Check if there's an error in the selection or range
+      const error = context.diagnostics.find(diagnostic => diagnostic.range.isEqual(range));
+      if (!error) {
+        return;
+      }
+
+      console.log('MyQuickFixProvider', error);
+  
+      // Create and return a new CodeAction
+      const action = new vscode.CodeAction('Dcits 快速修复', vscode.CodeActionKind.QuickFix);
+    //   action.edit = new vscode.WorkspaceEdit();
+      const errorLine = error.range.start.line;
+      
+      // Define your fix here, for example
+      action.command = {
+        command: 'codedcit.apply.quickFix',
+        title: 'Apply my fix',// 获取错误行的整行代码
+        arguments: [error.message, document.lineAt(errorLine).text]
+    };    
+      return [action];
+    }
+}

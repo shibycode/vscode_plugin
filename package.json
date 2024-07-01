@@ -99,6 +99,11 @@
     ],
     "commands": [
       {
+        "command": "codedcit.apply.quickFix",
+        "title": "Dcits 快速修复",
+        "category": "codedcit"
+      },
+      {
         "command": "codedcit.auto_completion_enable",
         "title": "%codedcit.auto_completion_enable.title%",
         "category": "codedcit"

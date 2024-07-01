@@ -37,3 +37,7 @@ export function createPromptCodeCompletion (fimPrefixCode: string, fimSuffixCode
 export function createPromptGenerationCode(language: string, functionCode: string): string {
 	return `${l10n.t("Check the following {0} code for any security issues, and please provide optimization suggestions", language)}\n\`\`\`${language}\n${functionCode}\n\`\`\`\n`;
 }
+
+export function quickFixCode(language: string, errorInfo: string, functionCode: string): string {
+	return `${l10n.t("Please explain the following code issues and fix them {0}", language)}\n${errorInfo}\n\`\`\`${language}\n${functionCode}\n\`\`\`\n`;
+}

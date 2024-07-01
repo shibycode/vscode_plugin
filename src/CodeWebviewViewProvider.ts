@@ -92,49 +92,64 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 		});
 	}
 
-	// 命令执行入口
-	public async executeCommand(command: string) {
-		if (command === 'codedcit.open_history') {
-			// 保存当前对话
-			this.sessionStore.update(this.sessionItem);
-			this.sessionItem = new SessionItem();
-			// 展示历史会话div
-			this.showSessionHistory();
-			// 展示历史对话
-			this._view?.webview.postMessage({ type: "clickOpenHistory"});
-			return;
-		}
-		// 开启新会话
-		if (command === 'codedcit.open_newchat') {
-			this.sessionStore.update(this.sessionItem);
-			this.sessionItem = new SessionItem();
-			this._view?.webview.postMessage({ type: "startNewChat", value: this._makestartChatDiv() });
-			return;
-		}
-
-		// 展示组件列表
-		if (command === 'codedcit.insert.components') {
-			// 保存当前对话
-			this.sessionStore.update(this.sessionItem);
-			this.sessionItem = new SessionItem();
-			this._view?.webview.postMessage({ type: "showComponentList"});
-			return;
-		}
-
-		// 通过快捷键打开插件
-		if (command === 'codedcit.open.plugin') {
-
-			// getFiles();
-
+		// 快速修复
+		public async quickFixCode(errorMessage: string, errorCode: string) {
 			if (!this._view) {
 				await vscode.commands.executeCommand("codedcit.chatView.focus");
 				await sleep(1000);
 			} else {
 				this._view?.show?.(true);
 			}
-			return;
+	
+			const languageId = vscode.window.activeTextEditor?.document.languageId;
+			if (!languageId) {
+				vscode.window.showErrorMessage(vscode.l10n.t("Unknown Language type"));
+				return;
+			}
+	
+			// 在这里处理错误信息和代码
+			let humanPrompt = prompt.quickFixCode(languageId, errorMessage, errorCode);
+	
+			this.startQuestion(humanPrompt);
+		}
+	
+		// 打开插件相关命令
+		public async toViewCommand(command: string) {
+			if (command !== 'codedcit.open.plugin') {
+				// 保存当前对话
+				this.sessionStore.update(this.sessionItem);
+				this.sessionItem = new SessionItem();
+			}
+	
+			switch (command) {
+				case 'codedcit.open_history':
+					// 展示历史会话div
+					this.showSessionHistory();
+					// 展示历史对话
+					this._view?.webview.postMessage({ type: "clickOpenHistory"});
+					break;
+				case 'codedcit.open_newchat':
+					// 开启新会话
+					this._view?.webview.postMessage({ type: "startNewChat", value: this._makestartChatDiv() });
+					break;
+				case 'codedcit.insert.components':
+					// 展示组件列表
+					this._view?.webview.postMessage({ type: "showComponentList"});
+					break;
+				case 'codedcit.open.plugin': 
+					// 通过快捷键打开插件
+					if (!this._view) {
+						await vscode.commands.executeCommand("codedcit.chatView.focus");
+						await sleep(1000);
+					} else {
+						this._view?.show?.(true);
+					}
+				break;
+			}
 		}
 
+	// 对话相关命令执行入口
+	public async executeCommand(command: string) {
 		// Get the selected text of the active editor
 		const selection = vscode.window.activeTextEditor?.selection;
 		const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
@@ -178,6 +193,7 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 				humanPrompt = prompt.createPromptCheckSecurity(languageId, selectedText);
 				break;
 			}
+			// 代码生成
 			case "codedcit.code_generation": {
 				humanPrompt = selectedText;
 				// humanPrompt = prompt.createPromptCheckSecurity(languageId, selectedText);
@@ -261,9 +277,10 @@ export class CodeWebviewViewProvider implements vscode.WebviewViewProvider {
 			"responseText": chatItem.aiMessage.content,
 			"aiMsgId": chatItem.aiMsgId,
 		};
+		let prompt = `你是一个经验丰富的前端开发工程师，请按照要求完成任务：\n${historyPrompt}`;
 		console.log("historyPrompt:", historyPrompt);
 		// 调接口成功 后发送历史记录和当前问题的答案给webview
-		postEventStream(historyPrompt, (data) => {
+		postEventStream(prompt, (data) => {
 			console.log("generateAnswer.streamData:", data);
 			chatItem.aiMessage.append(data);
 			chatItem.aiMsgId = index.toString();

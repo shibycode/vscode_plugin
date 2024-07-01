@@ -313,6 +313,10 @@ ul {
     width: 100%
 }
 
+.answerDiv > h2, .answerDiv > h3 {
+    color: var(--vscode-editor-foreground);
+}
+
 .question-container {
     padding: 0;
     float: right
